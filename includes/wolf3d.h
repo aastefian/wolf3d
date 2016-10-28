@@ -12,8 +12,8 @@
 
 #ifndef _WOLF_3D_H
 # define _WOLF_3D_H
-# define WIN_WIDTH 1280
-# define WIN_HEIGHT 800
+# define WIN_WIDTH 960
+# define WIN_HEIGHT 540
 # define WIN_BPP 32
 # define MAP_WIDTH 5
 # define MAP_HEIGHT 6
