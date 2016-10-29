@@ -19,11 +19,11 @@ void	load_map(int ***map, char *map_name)
 
 	i = 0;
 	(void)map_name;
-	if (!(*map = (int **)malloc(sizeof(int *) * 6)))
+	if (!(*map = (int **)malloc(sizeof(int *) * 5)))
 		return;
 	while (i < 5)
 	{
-		if (!((*map)[i] = (int *)malloc(sizeof(int) * 6)))
+		if (!((*map)[i] = (int *)malloc(sizeof(int) * 5)))
 			return;
 		i++;
 	}
@@ -32,29 +32,24 @@ void	load_map(int ***map, char *map_name)
 	(*map)[0][2] = 1;
 	(*map)[0][3] = 1;
    	(*map)[0][4] = 1;
-	(*map)[0][5] = '\0';
 	(*map)[1][0] = 1;
 	(*map)[1][1] = 0;
 	(*map)[1][2] = 0;
 	(*map)[1][3] = 1;
 	(*map)[1][4] = 1;    
-	(*map)[1][5] = '\0';
 	(*map)[2][0] = 1;
 	(*map)[2][1] = 0;
 	(*map)[2][2] = 0;
 	(*map)[2][3] = 1;
 	(*map)[2][4] = 1;    
-	(*map)[2][5] = '\0';
 	(*map)[3][0] = 1;
 	(*map)[3][1] = 0;
 	(*map)[3][2] = 0;
 	(*map)[3][3] = 1;
 	(*map)[3][4] = 1;    
-	(*map)[3][5] = '\0';
 	(*map)[4][0] = 1;
 	(*map)[4][1] = 0;
 	(*map)[4][2] = 0;
 	(*map)[4][3] = 1;
 	(*map)[4][4] = 1;    
-	(*map)[4][5] = '\0';
 }

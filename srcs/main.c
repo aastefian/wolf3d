@@ -41,7 +41,7 @@ void	wolf3d(int ***map)
 	pixel_to_image(screen, 100, 100, 16777215);
 	while(quit == 0)
     {
-		SDL_UpdateWindowSurface(window);
+		
 		while(SDL_PollEvent(&event))
         {
 			wolf3d_handler(map, screen, event);
@@ -51,11 +51,12 @@ void	wolf3d(int ***map)
                 quit = 1;
             }
 		}
+		SDL_UpdateWindowSurface(window);
 
 	}
 	SDL_FreeSurface(screen);
 	SDL_DestroyWindow(window);
-    //Initialize image, and image buffer
+    //Initialize imag, and image buffer
 	//wolf3d_handler(map, mini_l, img);
 }
 
