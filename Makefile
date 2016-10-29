@@ -27,7 +27,8 @@ $(NAME):
 	@echo "--Compiling libft library--"
 	@$(MAKE) $(MAKE_FLAGS) -C $(LIBFT_DIR)
 	@$(CC) $(CC_FLAG) -c $(SRC)
-	@$(CC) -o $(NAME) $(OBJ) $(LIBFT) $(SDL_FLAGS)
+	@mkdir -p bin
+	@$(CC) -o bin/$(NAME) $(OBJ) $(LIBFT) $(SDL_FLAGS)
 	@echo "--Done---------------------"
 
 clean:
@@ -41,3 +42,6 @@ fclean: clean
 	@$(RM) $(NAME)
 
 re: fclean all
+
+run: $(NAME)
+	./bin/wolf3d default
