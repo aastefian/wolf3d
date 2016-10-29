@@ -41,18 +41,18 @@ void	wolf3d(int ***map)
 	pixel_to_image(screen, 100, 100, 16777215);
 	while(quit == 0)
     {
-		
+
 		while(SDL_PollEvent(&event))
         {
 			wolf3d_handler(map, screen, event);
-			if(event.type == SDL_QUIT)
+			if(event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
             {
                 //Quit the program
                 quit = 1;
             }
 		}
 		SDL_UpdateWindowSurface(window);
-
+  
 	}
 	SDL_FreeSurface(screen);
 	SDL_DestroyWindow(window);
