@@ -17,6 +17,9 @@ void	load_map(int ***map, char *map_name)
 {
 	int i;
 
+	int mapWitdh = 5;
+	int mapHeight = 5;
+
 	i = 0;
 	(void)map_name;
 	if (!(*map = (int **)malloc(sizeof(int *) * 5)))
@@ -27,29 +30,18 @@ void	load_map(int ***map, char *map_name)
 			return;
 		i++;
 	}
-	(*map)[0][0] = 1;
-	(*map)[0][1] = 1;
-	(*map)[0][2] = 1;
-	(*map)[0][3] = 1;
-   	(*map)[0][4] = 1;
-	(*map)[1][0] = 1;
-	(*map)[1][1] = 0;
-	(*map)[1][2] = 0;
-	(*map)[1][3] = 1;
-	(*map)[1][4] = 1;    
-	(*map)[2][0] = 1;
-	(*map)[2][1] = 0;
-	(*map)[2][2] = 0;
-	(*map)[2][3] = 1;
-	(*map)[2][4] = 1;    
-	(*map)[3][0] = 1;
-	(*map)[3][1] = 0;
-	(*map)[3][2] = 0;
-	(*map)[3][3] = 1;
-	(*map)[3][4] = 1;    
-	(*map)[4][0] = 1;
-	(*map)[4][1] = 0;
-	(*map)[4][2] = 0;
-	(*map)[4][3] = 1;
-	(*map)[4][4] = 1;    
+
+	int local_map[5][5] = {
+	    {1, 1, 1, 1, 1},
+	    {1, 0, 0, 0, 1},
+	    {1, 0, 0, 0, 1},
+	    {1, 0, 0, 0, 1},
+	    {1, 1, 1, 1, 1},
+	};
+
+	for (int i = 0; i < mapHeight; i++)
+	{
+		for (int j = 0; j < mapHeight; j++)
+			(*map)[i][j] = local_map[i][j];
+	}
 }
