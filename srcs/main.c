@@ -44,12 +44,14 @@ void	wolf3d(int ***map)
 		SDL_UpdateWindowSurface(window);
 		while(SDL_PollEvent(&event))
         {
+			wolf3d_handler(map, screen, event);
 			if(event.type == SDL_QUIT)
             {
                 //Quit the program
                 quit = 1;
             }
 		}
+
 	}
 	SDL_FreeSurface(screen);
 	SDL_DestroyWindow(window);

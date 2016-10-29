@@ -13,8 +13,10 @@
 #include "../includes/wolf3d.h"
 #include "../libft/libft.h"
 #include <stdlib.h>
+#include <SDL2/SDL.h>
 
-void	wolf3d_handler(int ***map, t_mlx mini_l, t_img img)
+
+void	wolf3d_handler(int ***map, SDL_Surface *screen, SDL_Event event)
 {
 	t_data *data;
 
@@ -24,8 +26,11 @@ void	wolf3d_handler(int ***map, t_mlx mini_l, t_img img)
 		ft_putstr("Not enough memory\n");
 		exit(0);
 	}
-	data->mini_l = mini_l;
-	data->img = img;
+	if (event.type = SDL_KEYDOWN)
+	{
+		if (event.key.keysym.sym == SDLK_UP)
+		pixel_to_image(screen, 50, 50, 16777215);
+	}
 	data->playerX = 96;
 	data->playerY = 224;
 	data->viewingAng = 90;

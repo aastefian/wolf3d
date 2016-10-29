@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef _WOLF_3D_H
+# include <SDL2/SDL.h>
 # define _WOLF_3D_H
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
@@ -67,7 +68,8 @@ typedef struct		s_data
 	int		playerY;
 }					t_data;
 
-void	wolf3d_handler(int ***map, t_mlx mini_l, t_img img);
+void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
+void	wolf3d_handler(int ***map, SDL_Surface *screen, SDL_Event event);
 void	load_map(int ***map, char *map_name);
 
 #endif
