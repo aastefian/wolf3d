@@ -45,3 +45,6 @@ re: fclean all
 
 run: $(NAME)
 	./bin/wolf3d default
+
+runforever:
+	nodemon -e c --watch . --exec make run
