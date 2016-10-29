@@ -1,0 +1,4 @@
+# Binary files
+*.o
+*.a
+bin/wolf3d
