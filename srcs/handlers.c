@@ -13,26 +13,44 @@
 #include "../includes/wolf3d.h"
 #include "../libft/libft.h"
 #include <stdlib.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 
-
-void	wolf3d_handler(int ***map, SDL_Surface *screen, SDL_Event event)
+float	deg_tan(float deg_angle)
 {
-	t_data *data;
+	return ((float)(tan(deg_angle * (M_PI) / 180)));
+}
 
-	data = NULL;
-	if (!(data = (t_data*)malloc(sizeof(t_data) * 1)))
+t_collision	*cast_ray(t_world *world, float angle)
+{
+	t_2d_p inters_v;
+	t_2d_p inters_h;
+}
+
+void	render(t_world *world)
+{
+	int			i;
+	float		angle;
+	t_collision	*collision;
+
+	i = 0;
+	angle = world->player.orientation + RADIANS_30;
+	//printf("%f\n", angle);
+	while (i < WIN_WIDTH)
 	{
-		ft_putstr("Not enough memory\n");
-		exit(0);
-	}
+	 	//collision = cast_ray(world, angle);
+		//get_distance(world->player.x, world->player.y, colision.x, collision.y);
+	 	angle += ((int)FOV / (float)WIN_WIDTH);
+	 	i++;
+	 }
+}
+
+void	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
+{
 	if (event.type = SDL_KEYDOWN)
 	{
 		if (event.key.keysym.sym == SDLK_UP)
 		pixel_to_image(screen, 50, 50, 16777215);
 	}
-	data->playerX = 96;
-	data->playerY = 224;
-	data->viewingAng = 90;
-	//render(&data, map);
+	render(world);
 }

@@ -21,7 +21,7 @@ void pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color)
     *((Uint32*)pixel) = color;
 }
 
-void	wolf3d(int ***map)
+void	wolf3d(t_world *world)
 {
 	SDL_Window		*window;
 	SDL_Surface 	*screen;
@@ -31,7 +31,6 @@ void	wolf3d(int ***map)
 
 	quit = 0;
 	window = NULL;
-	(void) map;
 //Initialize SDL	
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 		return ;
@@ -44,7 +43,7 @@ void	wolf3d(int ***map)
 
 		while(SDL_PollEvent(&event))
         {
-			wolf3d_handler(map, screen, event);
+			wolf3d_handler(world, screen, event);
 			if(event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
             {
                 //Quit the program
@@ -60,15 +59,25 @@ void	wolf3d(int ***map)
 	//wolf3d_handler(map, mini_l, img);
 }
 
-int	main(int ac, char **av)
+int	main(int argc, char **argv)
 {
-	int **map;
+	int 	**map;
+	t_world	*world;
 
 	map = NULL;
-	if (ac == 2)
+	if (argc == 2)
 	{
-		load_map(&map, av[1]);
-		wolf3d(&map);
+		if (!(world = (t_world*)malloc(sizeof(t_world) * 1)))
+		{
+			ft_putstr("Not enough memory\n");
+			exit(0);
+		}
+		load_map(&map, argv[1]);
+		world->player.x = 160;
+		world->player.y = 160;
+		world->player.orientation = RADIANS_60;
+		world->map = map;
+		wolf3d(world);
 	}
 	else
 	{

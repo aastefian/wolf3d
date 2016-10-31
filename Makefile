@@ -28,7 +28,7 @@ $(NAME):
 	@$(MAKE) $(MAKE_FLAGS) -C $(LIBFT_DIR)
 	@$(CC) $(CC_FLAG) -c $(SRC)
 	@mkdir -p bin
-	@$(CC) -o bin/$(NAME) $(OBJ) $(LIBFT) $(SDL_FLAGS)
+	@$(CC) -o bin/$(NAME) $(OBJ) $(LIBFT) -lm $(SDL_FLAGS)
 	@echo "--Done---------------------"
 
 clean:

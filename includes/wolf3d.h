@@ -16,32 +16,10 @@
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
 # define WIN_BPP 32
-# define MAP_WIDTH 5
-# define MAP_HEIGHT 6
+# define FOV 60
+# define RADIANS_30 0.523599
+# define RADIANS_60 1.0472
 #define CUBE_SIZE 64
-
-typedef struct		s_mlx
-{
-	void *mlx;
-	void *win;
-}					t_mlx;
-
-typedef struct		s_img
-{
-	void	*img;
-	int		bits_per_pixel;
-	int		size_line;
-	int		endian;
-	char	*data;
-}					t_img;
-
-typedef struct		s_keys
-{
-	int left;
-	int right;
-	int up;
-	int down;
-}					t_keys;
 
 typedef struct		s_2d_p
 {
@@ -58,18 +36,34 @@ typedef struct		s_mask
 	unsigned int amask;
 }					t_mask;
 
-typedef struct		s_data
+typedef struct		s_tile
 {
-	t_mlx	mini_l;
-	t_img	img;
-	t_keys	keys_pushed;
-	float	viewingAng;
-	int		playerX;
-	int		playerY;
-}					t_data;
+	int x;
+	int y;
+}					t_tile;
+
+typedef struct		s_collision
+{
+	t_tile	tile;
+	int		x;
+	int		y;
+}					t_collision;
+
+typedef struct		s_player
+{
+	int		x;
+	int		y;
+	float	orientation;
+}					t_player;
+
+typedef struct		s_world
+{
+	t_player	player;
+	int 		**map;
+}					t_world;
 
 void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
-void	wolf3d_handler(int ***map, SDL_Surface *screen, SDL_Event event);
+void	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
 void	load_map(int ***map, char *map_name);
 
 #endif
