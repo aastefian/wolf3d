@@ -13,12 +13,19 @@
 #ifndef _WOLF_3D_H
 # include <SDL2/SDL.h>
 # define _WOLF_3D_H
-# define WIN_WIDTH 960
-# define WIN_HEIGHT 540
+# define WIN_WIDTH 320
+# define WIN_HEIGHT 200
 # define WIN_BPP 32
-# define FOV 60
+# define MAP_WIDTH 5
+# define MAP_HEIGHT 5
+# define FOV_RADIANS 1.0472
 # define RADIANS_30 0.523599
+# define RADIANS_45 0.785398
 # define RADIANS_60 1.0472
+# define RADIANS_90 1.5708
+# define RADIANS_180 3.14159
+# define RADIANS_270 4.71239
+# define RADIANS_359 6.26573
 #define CUBE_SIZE 64
 
 typedef struct		s_2d_p
@@ -45,8 +52,7 @@ typedef struct		s_tile
 typedef struct		s_collision
 {
 	t_tile	tile;
-	int		x;
-	int		y;
+	float 	distance;
 }					t_collision;
 
 typedef struct		s_player
@@ -56,14 +62,20 @@ typedef struct		s_player
 	float	orientation;
 }					t_player;
 
+typedef struct		s_window
+{
+	SDL_Surface		*image;
+}					t_window;
+
 typedef struct		s_world
 {
 	t_player	player;
 	int 		**map;
+	t_window	window;
 }					t_world;
 
 void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
-void	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
+int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
 void	load_map(int ***map, char *map_name);
 
 #endif

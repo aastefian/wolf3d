@@ -1,0 +1,159 @@
+diff --git a/includes/wolf3d.h b/includes/wolf3d.h
+index fc28263..29601c1 100644
+--- a/includes/wolf3d.h
++++ b/includes/wolf3d.h
+@@ -13,12 +13,19 @@
+ #ifndef _WOLF_3D_H
+ # include <SDL2/SDL.h>
+ # define _WOLF_3D_H
+-# define WIN_WIDTH 960
+-# define WIN_HEIGHT 540
++# define WIN_WIDTH 320
++# define WIN_HEIGHT 200
+ # define WIN_BPP 32
+-# define FOV 60
++# define MAP_WIDTH 5
++# define MAP_HEIGHT 5
++# define FOV_RADIANS 1.0472
+ # define RADIANS_30 0.523599
++# define RADIANS_45 0.785398
+ # define RADIANS_60 1.0472
++# define RADIANS_90 1.5708
++# define RADIANS_180 3.14159
++# define RADIANS_270 4.71239
++# define RADIANS_359 6.26573
+ #define CUBE_SIZE 64
+ 
+ typedef struct		s_2d_p
+@@ -45,8 +52,7 @@ typedef struct		s_tile
+ typedef struct		s_collision
+ {
+ 	t_tile	tile;
+-	int		x;
+-	int		y;
++	float 	distance;
+ }					t_collision;
+ 
+ typedef struct		s_player
+@@ -56,14 +62,20 @@ typedef struct		s_player
+ 	float	orientation;
+ }					t_player;
+ 
++typedef struct		s_window
++{
++	SDL_Surface		*image;
++}					t_window;
++
+ typedef struct		s_world
+ {
+ 	t_player	player;
+ 	int 		**map;
++	t_window	window;
+ }					t_world;
+ 
+ void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
+-void	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
++int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
+ void	load_map(int ***map, char *map_name);
+ 
+ #endif
+diff --git a/srcs/handlers.c b/srcs/handlers.c
+index e453faf..4e357da 100644
+--- a/srcs/handlers.c
++++ b/srcs/handlers.c
+@@ -36,21 +36,50 @@ void	render(t_world *world)
+ 	i = 0;
+ 	angle = world->player.orientation + RADIANS_30;
+ 	//printf("%f\n", angle);
+-	while (i < WIN_WIDTH)
++	if (!(collision = (t_collision*)malloc(sizeof(t_collision) * WIN_WIDTH)))
+ 	{
+-	 	//collision = cast_ray(world, angle);
++		ft_putstr("Not enough memory\n");
++		exit(0);
++	}
++	//while (i < WIN_WIDTH)
++	while (i < 10)
++	{
++		 cast_ray(&collision[i], world, angle);
+ 		//get_distance(world->player.x, world->player.y, colision.x, collision.y);
+-	 	angle += ((int)FOV / (float)WIN_WIDTH);
++	 	angle -= ((int)FOV_RADIANS / (float)WIN_WIDTH);
+ 	 	i++;
+ 	 }
++	
++	 i = 0;
++	 while (i < WIN_WIDTH)
++	 {
++		 int length = (int)(64 / (collision[i].distance) * ((WIN_WIDTH / 2) * tan(RADIANS_30)));
++		 //printf("[%f]", collision[i].distance);
++		 //printf("[%d]", length);
++		 print_line(world, length, i);
++		 i++;
++	 }
+ }
+ 
+-void	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
++int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
+ {
+-	if (event.type = SDL_KEYDOWN)
++	if(event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
++    {
++		//Quit the program
++        return (1);
++    }
++	if (event.type == SDL_KEYDOWN)
+ 	{
+-		if (event.key.keysym.sym == SDLK_UP)
+-		pixel_to_image(screen, 50, 50, 16777215);
+-	}
+-	render(world);
++		if (event.key.keysym.sym == SDLK_RIGHT)
++		{
++			world->player.orientation += 0.01;
++			render(world);
++		}
++		else if (event.key.keysym.sym == SDLK_LEFT)
++		{
++			world->player.orientation -= 0.01;
++			render(world);
++		}
++	}	
++	return (0);
+ }
+\ No newline at end of file
+diff --git a/srcs/main.c b/srcs/main.c
+index e445a73..b2fb73c 100644
+--- a/srcs/main.c
++++ b/srcs/main.c
+@@ -37,19 +37,12 @@ void	wolf3d(t_world *world)
+ //Set up window
+ 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, WIN_WIDTH, WIN_HEIGHT, 0);
+ 	screen = SDL_GetWindowSurface(window);
+-	pixel_to_image(screen, 100, 100, 16777215);
++	world->window.image = screen;
+ 	while(quit == 0)
+     {
+ 
+ 		while(SDL_PollEvent(&event))
+-        {
+-			wolf3d_handler(world, screen, event);
+-			if(event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
+-            {
+-                //Quit the program
+-                quit = 1;
+-            }
+-		}
++			quit = wolf3d_handler(world, screen, event);
+ 		SDL_UpdateWindowSurface(window);
+   
+ 	}
+@@ -75,7 +68,7 @@ int	main(int argc, char **argv)
+ 		load_map(&map, argv[1]);
+ 		world->player.x = 160;
+ 		world->player.y = 160;
+-		world->player.orientation = RADIANS_60;
++		world->player.orientation = RADIANS_45;
+ 		world->map = map;
+ 		wolf3d(world);
+ 	}

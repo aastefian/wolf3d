@@ -37,19 +37,12 @@ void	wolf3d(t_world *world)
 //Set up window
 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, WIN_WIDTH, WIN_HEIGHT, 0);
 	screen = SDL_GetWindowSurface(window);
-	pixel_to_image(screen, 100, 100, 16777215);
+	world->window.image = screen;
 	while(quit == 0)
     {
 
 		while(SDL_PollEvent(&event))
-        {
-			wolf3d_handler(world, screen, event);
-			if(event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
-            {
-                //Quit the program
-                quit = 1;
-            }
-		}
+			quit = wolf3d_handler(world, screen, event);
 		SDL_UpdateWindowSurface(window);
   
 	}
@@ -75,7 +68,7 @@ int	main(int argc, char **argv)
 		load_map(&map, argv[1]);
 		world->player.x = 160;
 		world->player.y = 160;
-		world->player.orientation = RADIANS_60;
+		world->player.orientation = RADIANS_45;
 		world->map = map;
 		wolf3d(world);
 	}
