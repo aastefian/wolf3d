@@ -17,8 +17,8 @@ void	load_map(int ***map, char *map_name)
 {
 	int i;
 
-	int mapWitdh = 5;
-	int mapHeight = 5;
+	int mapWitdh = MAP_WIDTH;
+	int mapHeight = MAP_HEIGHT;
 
 	i = 0;
 	(void)map_name;
@@ -33,9 +33,9 @@ void	load_map(int ***map, char *map_name)
 
 	int local_map[5][5] = {
 	    {1, 1, 1, 1, 1},
-	    {1, 0, 0, 0, 1},
-	    {1, 0, 0, 0, 1},
-	    {1, 0, 0, 0, 1},
+	    {1, 0, 0, 1, 1},
+	    {1, 0, 0, 1, 1},
+	    {1, 0, 0, 1, 1},
 	    {1, 1, 1, 1, 1},
 	};
 

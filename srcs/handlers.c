@@ -21,10 +21,12 @@ void	print_line(t_world *world, int length, int x)
 	int y;
 
 	y = 0;
-	while(y < length)
-		y++;
-	while (y < WIN_HEIGHT && y < length * 2)
+	while (y < WIN_HEIGHT - (WIN_HEIGHT - length) / 2)
 	{
+		if(y < (WIN_HEIGHT - length) / 2) {
+			y++;
+			continue;
+		}
 		pixel_to_image(world->window.image, x, y, 16777215);
 		y++;
 	}
@@ -81,49 +83,83 @@ void	calc_inters_horizontal(t_2d_p *pointInters, int playerX, int playerY,
 	(*pointInters).x = x;
 }
 
+t_tile getPointTile(int x, int y){
+	t_tile pointTile;
+
+	pointTile.x = x / CUBE_SIZE;
+	pointTile.y = y / CUBE_SIZE;
+
+	return (pointTile);
+}
+
+float getDistance(int x1,int x2,float angle){
+	return abs(x1 - x2) / cos(angle);
+}
+
 void		dist_collision_vertical(t_collision *collision_v, t_world *world, float angle)
 {
-	t_2d_p pointInters;
-	t_2d_p a;
+	// TODO: handle left and right sides of the angle
+	int collisionX = (world->player.x / CUBE_SIZE + 1) * CUBE_SIZE;
+	int collisionY = world->player.y - (int) ((collisionX - world->player.x) * tan(angle));
 
-	pointInters.x = 0;
-	pointInters.y = 0;
-	a.x = 0;
-	a.y = 0;
-	calc_inters_vertical(&pointInters, world->player.x, world->player.y, angle);
-	if (world->map[pointInters.y / CUBE_SIZE][pointInters.x / CUBE_SIZE] == 1)
-	{
-		//printf("---[%f]----[%d][%d]---\n", angle, pointInters.y / CUBE_SIZE, pointInters.x / CUBE_SIZE);
-		collision_v->distance = abs(world->player.x - pointInters.x) / cos(angle);
-		collision_v->tile.y = pointInters.y / CUBE_SIZE;
-		collision_v->tile.x = pointInters.x / CUBE_SIZE;
-		return;
-	}
-	else
-	{
-		while(1)
-		{
-			calc_a_vertical(&a, angle);
-			pointInters.y = pointInters.y + a.y;
-			pointInters.x = pointInters.x + a.x;
-			if ((pointInters.y / CUBE_SIZE) >= 0 && (pointInters.y / CUBE_SIZE) < MAP_HEIGHT && (pointInters.x / CUBE_SIZE) >= 0 && (pointInters.x / CUBE_SIZE) < MAP_WIDTH)
-			{
-				if(world->map[pointInters.y / CUBE_SIZE][pointInters.x / CUBE_SIZE] == 1)
-				{
-					//printf("---[%f]----[%d][%d]---\n", angle, pointInters.y / CUBE_SIZE, pointInters.x / CUBE_SIZE);
-					collision_v->distance = abs(world->player.x - pointInters.x) / cos(angle);
-					collision_v->tile.y = pointInters.y / CUBE_SIZE;
-					collision_v->tile.x = pointInters.x / CUBE_SIZE;
-					return;
-				}
-			}
-			else
-			{
-				collision_v->distance = -1;
-				return;
-			}
-		}
-	}
+	t_tile firstTile = getPointTile(collisionX, collisionY);
+
+	if(firstTile.x >= 0 &&
+	 firstTile.x < MAP_WIDTH &&
+	  firstTile.y >= 0 &&
+	  firstTile.y < MAP_HEIGHT &&
+	  world->map[firstTile.y][firstTile.x]) {
+		 	collision_v->distance = getDistance(world->player.x, collisionX, angle);
+			// printf("distance %f\n", collision_v->distance);
+		  	collision_v->tile.x = firstTile.x;
+		  	collision_v->tile.y = firstTile.y;
+		  return;
+	  }
+
+	// printf("tile (%d, %d)\n", firstTile.x, firstTile.y);
+	// printf("tile %d\n", world->map[firstTile.y][firstTile.x]);
+	// printf("angle %f\n", angle);
+	// t_2d_p pointInters;
+	// t_2d_p a;
+
+	// pointInters.x = 0;
+	// pointInters.y = 0;
+	// a.x = 0;
+	// a.y = 0;
+	// calc_inters_vertical(&pointInters, world->player.x, world->player.y, angle);
+	// if (world->map[pointInters.y / CUBE_SIZE][pointInters.x / CUBE_SIZE] == 1)
+	// {
+	// 	//printf("---[%f]----[%d][%d]---\n", angle, pointInters.y / CUBE_SIZE, pointInters.x / CUBE_SIZE);
+	// 	collision_v->distance = abs(world->player.x - pointInters.x) / cos(angle);
+	// 	collision_v->tile.y = pointInters.y / CUBE_SIZE;
+	// 	collision_v->tile.x = pointInters.x / CUBE_SIZE;
+	// 	return;
+	// }
+	// else
+	// {
+	// 	while(1)
+	// 	{
+	// 		calc_a_vertical(&a, angle);
+	// 		pointInters.y = pointInters.y + a.y;
+	// 		pointInters.x = pointInters.x + a.x;
+	// 		if ((pointInters.y / CUBE_SIZE) >= 0 && (pointInters.y / CUBE_SIZE) < MAP_HEIGHT && (pointInters.x / CUBE_SIZE) >= 0 && (pointInters.x / CUBE_SIZE) < MAP_WIDTH)
+	// 		{
+	// 			if(world->map[pointInters.y / CUBE_SIZE][pointInters.x / CUBE_SIZE] == 1)
+	// 			{
+	// 				//printf("---[%f]----[%d][%d]---\n", angle, pointInters.y / CUBE_SIZE, pointInters.x / CUBE_SIZE);
+	// 				collision_v->distance = abs(world->player.x - pointInters.x) / cos(angle);
+	// 				collision_v->tile.y = pointInters.y / CUBE_SIZE;
+	// 				collision_v->tile.x = pointInters.x / CUBE_SIZE;
+	// 				return;
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			collision_v->distance = -1;
+	// 			return;
+	// 		}
+	// 	}
+	// }
 }
 
 void	dist_collision_horizontal(t_collision *collision_h, t_world *world, float angle)
@@ -189,28 +225,32 @@ void	cast_ray(t_collision *collision, t_world *world, float angle)
 		ft_putstr("Not enough memory\n");
 		exit(0);
 	}
+	// printf("angle %f\n", angle);
 	dist_collision_vertical(collision_v, world, angle);
-	dist_collision_horizontal(collision_h, world, angle);
+
+	*collision = *collision_v;
+
+	// dist_collision_horizontal(collision_h, world, angle);
 	//printf("[%f]   ", collision_h->distance);
 	//printf("[%f]\n", collision_v->distance);
-	if (collision_v->distance != -1 && collision_h->distance != -1)
-	{
-		if (collision_v->distance > collision_h->distance)
-		{
-			*collision = *collision_h;
-			collision_h->distance = collision_h->distance * cos(world->player.orientation);
-		}	
-		else
-		{
-			*collision = *collision_v;
-			collision_v->distance = collision_v->distance * cos(world->player.orientation);
-		}
-	}
-	else if (collision_v->distance == -1)
-		*collision = *collision_h;
-	else
-		*collision = *collision_v;
-	printf("[%f]\n", collision->distance);
+	// if (collision_v->distance != -1 && collision_h->distance != -1)
+	// {
+	// 	if (collision_v->distance > collision_h->distance)
+	// 	{
+	// 		*collision = *collision_h;
+	// 		collision_h->distance = collision_h->distance * cos(world->player.orientation);
+	// 	}	
+	// 	else
+	// 	{
+	// 		*collision = *collision_v;
+	// 		collision_v->distance = collision_v->distance * cos(world->player.orientation);
+	// 	}
+	// }
+	// else if (collision_v->distance == -1)
+	// 	*collision = *collision_h;
+	// else
+	// 	*collision = *collision_v;
+	//printf("[%f]\n", collision->distance);
 
 }
 
@@ -220,31 +260,26 @@ void	render(t_world *world)
 	float		angle;
 	t_collision	*collision;
 
-	i = 0;
-	angle = world->player.orientation + RADIANS_30;
 	//printf("%f\n", angle);
+	// TODO: free
 	if (!(collision = (t_collision*)malloc(sizeof(t_collision) * WIN_WIDTH)))
 	{
 		ft_putstr("Not enough memory\n");
 		exit(0);
 	}
-	//while (i < WIN_WIDTH)
-	while (i < 10)
+
+	i = 0;
+	while (i < WIN_WIDTH)
 	{
-		 cast_ray(&collision[i], world, angle);
-		//get_distance(world->player.x, world->player.y, colision.x, collision.y);
-	 	angle -= ((int)FOV_RADIANS / (float)WIN_WIDTH);
+		angle = world->player.orientation - FOV_RADIANS / (float) WIN_WIDTH / 2 + FOV_RADIANS/2 - FOV_RADIANS * i / (float) WIN_WIDTH;
+	 	cast_ray(&collision[i], world, angle);
+
+printf("haha %f\n", collision[i].distance);
+		int length = (int)(64 / (collision[i].distance) * ((WIN_WIDTH / 2) * tan(RADIANS_30)));
+printf("length %d\n", length);
+		print_line(world, length, i);
+		
 	 	i++;
-	 }
-	
-	 i = 0;
-	 while (i < WIN_WIDTH)
-	 {
-		 int length = (int)(64 / (collision[i].distance) * ((WIN_WIDTH / 2) * tan(RADIANS_30)));
-		 //printf("[%f]", collision[i].distance);
-		 //printf("[%d]", length);
-		 print_line(world, length, i);
-		 i++;
 	 }
 }
 
@@ -259,14 +294,15 @@ int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
 	{
 		if (event.key.keysym.sym == SDLK_RIGHT)
 		{
-			world->player.orientation += 0.01;
+			world->player.orientation -= 0.01;
 			render(world);
 		}
 		else if (event.key.keysym.sym == SDLK_LEFT)
 		{
-			world->player.orientation -= 0.01;
+			world->player.orientation += 0.01;
 			render(world);
 		}
-	}	
+	}
+
 	return (0);
 }

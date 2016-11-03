@@ -38,6 +38,9 @@ void	wolf3d(t_world *world)
 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, WIN_WIDTH, WIN_HEIGHT, 0);
 	screen = SDL_GetWindowSurface(window);
 	world->window.image = screen;
+
+	render(world);
+
 	while(quit == 0)
     {
 
@@ -68,7 +71,7 @@ int	main(int argc, char **argv)
 		load_map(&map, argv[1]);
 		world->player.x = 160;
 		world->player.y = 160;
-		world->player.orientation = RADIANS_45;
+		world->player.orientation = M_PI / 4;
 		world->map = map;
 		wolf3d(world);
 	}

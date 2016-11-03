@@ -12,15 +12,19 @@
 
 #ifndef _WOLF_3D_H
 # include <SDL2/SDL.h>
+# include <math.h>
+
 # define _WOLF_3D_H
-# define WIN_WIDTH 320
-# define WIN_HEIGHT 200
+// # define WIN_WIDTH (int) (960 / 100)
+// # define WIN_HEIGHT (int) (540 / 100)
+# define WIN_WIDTH (int) (960)
+# define WIN_HEIGHT (int) (540)
 # define WIN_BPP 32
 # define MAP_WIDTH 5
 # define MAP_HEIGHT 5
-# define FOV_RADIANS 1.0472
+# define FOV_RADIANS M_PI / 3
 # define RADIANS_30 0.523599
-# define RADIANS_45 0.785398
+# define RADIANS_45 M_PI / 4
 # define RADIANS_60 1.0472
 # define RADIANS_90 1.5708
 # define RADIANS_180 3.14159
