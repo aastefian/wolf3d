@@ -13,6 +13,7 @@
 #include "../includes/wolf3d.h"
 #include "../libft/libft.h"
 #include <SDL2/SDL.h>
+#include <fcntl.h>
 
 void pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color)
 {
@@ -38,7 +39,6 @@ void	wolf3d(t_world *world)
 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, WIN_WIDTH, WIN_HEIGHT, 0);
 	screen = SDL_GetWindowSurface(window);
 	world->window.image = screen;
-
 	render(world);
 
 	while(quit == 0)
@@ -59,6 +59,7 @@ int	main(int argc, char **argv)
 {
 	int 	**map;
 	t_world	*world;
+	int		fd;
 
 	map = NULL;
 	if (argc == 2)
@@ -68,10 +69,12 @@ int	main(int argc, char **argv)
 			ft_putstr("Not enough memory\n");
 			exit(0);
 		}
+		 FILE *saved = stdout;
+		stdout = fopen("log.txt", "w+");
 		load_map(&map, argv[1]);
-		world->player.x = 160;
+		world->player.x = 159;
 		world->player.y = 160;
-		world->player.orientation = M_PI / 4;
+		world->player.orientation = M_PI / 2;
 		world->map = map;
 		wolf3d(world);
 	}

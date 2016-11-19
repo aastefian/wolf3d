@@ -26,11 +26,15 @@
 # define RADIANS_30 0.523599
 # define RADIANS_45 M_PI / 4
 # define RADIANS_60 1.0472
-# define RADIANS_90 1.5708
+# define RADIANS_90 M_PI / 2
 # define RADIANS_180 3.14159
-# define RADIANS_270 4.71239
-# define RADIANS_359 6.26573
-#define CUBE_SIZE 64
+# define RADIANS_270 (3 * M_PI) / 2
+# define RADIANS_359 M_PI * 3 
+# define RADIANS_360 M_PI * 2 
+# define CUBE_SIZE 64
+# define BLACK 0
+# define WHITE 16777215
+#define RED 16737380
 
 typedef struct		s_2d_p
 {

@@ -47,4 +47,4 @@ run: $(NAME)
 	./bin/wolf3d default
 
 runforever:
-	nodemon -e c,h --watch . --exec make run
+	nodemon -e c,h --watch . --exec make run > /tmp/lala
