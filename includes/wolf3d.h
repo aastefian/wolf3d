@@ -34,7 +34,8 @@
 # define CUBE_SIZE 64
 # define BLACK 0
 # define WHITE 16777215
-#define RED 16737380
+# define RED 16737380
+# define BOUND_RIGHT 190
 
 typedef struct		s_2d_p
 {

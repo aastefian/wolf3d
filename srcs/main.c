@@ -72,9 +72,9 @@ int	main(int argc, char **argv)
 		 FILE *saved = stdout;
 		stdout = fopen("log.txt", "w+");
 		load_map(&map, argv[1]);
-		world->player.x = 159;
+		world->player.x = 160;
 		world->player.y = 160;
-		world->player.orientation = M_PI / 2;
+		world->player.orientation = M_PI / 4;
 		world->map = map;
 		wolf3d(world);
 	}
