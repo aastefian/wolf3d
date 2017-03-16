@@ -15,23 +15,23 @@
 # include <math.h>
 
 # define _WOLF_3D_H
+# define PI 3.141592
 // # define WIN_WIDTH (int) (960 / 100)
 // # define WIN_HEIGHT (int) (540 / 100)
-# define WIN_WIDTH (int) (960)
-# define WIN_HEIGHT (int) (540)
+# define WIN_WIDTH 960
+# define WIN_HEIGHT 540
 # define WIN_BPP 32
 # define MAP_WIDTH 5
 # define MAP_HEIGHT 5
-# define FOV_RADIANS M_PI / 3
-# define FOV_DEGREES 60
-# define RADIANS_30 0.523599
-# define RADIANS_45 M_PI / 4
-# define RADIANS_60 1.0472
-# define RADIANS_90 M_PI / 2
-# define RADIANS_180 3.14159
-# define RADIANS_270 (3 * M_PI) / 2
-# define RADIANS_359 M_PI * 3 
-# define RADIANS_360 M_PI * 2 
+# define FOV_RADIANS 1.0471975512
+# define RADIANS_30 0.5235987756
+# define RADIANS_45 0.7853981634
+# define RADIANS_60 1.0471975512
+# define RADIANS_90 1.5707963268
+# define RADIANS_180 3.1415926536
+# define RADIANS_270 4.7123889804
+# define RADIANS_359 6.2657320147 
+# define RADIANS_360 6.2831853072
 # define CUBE_SIZE 64
 # define BLACK 0
 # define WHITE 16777215
@@ -62,14 +62,14 @@ typedef struct		s_tile
 typedef struct		s_collision
 {
 	t_tile	tile;
-	float 	distance;
+	double 	distance;
 }					t_collision;
 
 typedef struct		s_player
 {
 	int		x;
 	int		y;
-	float	orientation;
+	double	orientation;
 }					t_player;
 
 typedef struct		s_window

@@ -11,7 +11,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SDL_FLAGS = `sdl2-config --cflags --libs`
 
 CC = gcc
-CC_FLAGS = -std=c11 -pedantic-errors -Wall -Werror -Wextra
+CC_FLAGS = -Wall -Werror -Wextra
 
 SRC =	$(SRC_DIR)/main.c \
 		$(SRC_DIR)/map_processing.c \
