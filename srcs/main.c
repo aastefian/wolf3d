@@ -43,7 +43,6 @@ void	wolf3d(t_world *world)
 
 	while(quit == 0)
     {
-
 		while(SDL_PollEvent(&event))
 			quit = wolf3d_handler(world, screen, event);
 		SDL_UpdateWindowSurface(window);
@@ -72,9 +71,9 @@ int	main(int argc, char **argv)
 		 FILE *saved = stdout;
 		stdout = fopen("log.txt", "w+");
 		load_map(&map, argv[1]);
-		world->player.x = 160;
-		world->player.y = 160;
-		world->player.orientation = M_PI / 4;
+		world->player.x = 187;
+		world->player.y = 192;
+		world->player.orientation = M_PI / 2;
 		world->map = map;
 		wolf3d(world);
 	}

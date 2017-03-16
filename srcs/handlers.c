@@ -49,7 +49,8 @@ t_tile getPointTile(int x, int y){
 }
 
 float getDistance(int x1,int x2,float angle){
-	return abs(x1 - x2) / cos(angle);
+	printf("x1 : %d\n x2 : %d\n angle : %f\n distance : %f\n--------\n", x1, x2, angle, (float)(abs(x1 - x2)) / cosf(angle));
+	return ((float)(abs(x1 - x2)) / cosf(angle));
 }
 
 float getDistanceHorizontal(int x1,int x2,float angle){
@@ -60,7 +61,9 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, float an
 {
 	int collisionX;
 	int collisionY;
+	
 	// If angle to the right x always goes to right and +1
+	
 	if (0 < angle && angle < RADIANS_90)
 	{
 		collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
@@ -90,12 +93,16 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, float an
 	}                                                                                        
 
 	t_tile firstTile = getPointTile(collisionX, collisionY);
+	//printf("collisionY %d, collisionX %d, testAngle %f, angle %f\n", collisionY, collisionX, fmod(angle, RADIANS_90), angle);
+	
+	
 
 	if(firstTile.x >= 0 &&
 	 firstTile.x < MAP_WIDTH &&
 	  firstTile.y >= 0 &&
 	  firstTile.y < MAP_HEIGHT &&
 	  world->map[firstTile.y][firstTile.x]) {
+		  //printf("angle %f\n", angle);
 		  if (0 < angle && angle < RADIANS_90)
 		 		collision_v->distance = getDistance(world->player.x, collisionX, fmod(angle, RADIANS_90));		 		
 		 else if(RADIANS_90 < angle && angle < RADIANS_180)
@@ -106,6 +113,10 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, float an
 				collision_v->distance = getDistanceHorizontal(world->player.x, collisionX, fmod(angle, RADIANS_90));
 		  	collision_v->tile.x = firstTile.x;
 		  	collision_v->tile.y = firstTile.y;
+			  
+//printf("y %d, x %d, collisionX %d, collisionY %d distance %f angle %f\n", firstTile.y, firstTile.x, collisionX, collisionY, collision_v->distance, angle);
+		
+			  
 			  //printf("collision(%d, %d)\n", collisionY, collisionX);
 		  return;
 	  }
@@ -160,11 +171,12 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, float an
 					 //printf("distance %f\n", collision_v->distance);
 		  			collision_v->tile.x = firstTile.x;
 		  			collision_v->tile.y = firstTile.y;
+					  
 //printf("collisionY %d collisionX %d playerY %d playerX %d tang %f\n---------\n", collisionY, collisionX, world->player.y, world->player.x, fmod(angle, RADIANS_90));					  					  
 					  
 					 // if (angle < 0.785398)
 		//printf("collision(%d, %d) angle %f\n", collisionY / 64, collisionX / 64, angle);			  
-//printf("y %d, x %d, collisionX %d, collisionY %d distance %f\n", firstTile.y, firstTile.x, collisionX, collisionY, collision_v->distance);
+//printf("y %d, x %d, collisionX %d, collisionY %d distance %f angle %f\n", firstTile.y, firstTile.x, collisionX, collisionY, collision_v->distance, angle);
 
 		  			return;
 		}
@@ -172,8 +184,6 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, float an
 			break;
 		w++;
 	  }
-	  
-	  
 }
 
 void	dist_collision_horizontal(t_collision *collision_h, t_world *world, float angle)
@@ -190,8 +200,6 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, float a
 	{
 		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
 		collisionX = world->player.x - (int)((world->player.y - collisionY) * tan(fmod(angle, RADIANS_90)));
-		if (angle <= 2.902897 && angle >= 2.69)
-			printf("collisionY %d collisionX %d playerY %d playerX %d angle %f collisionY real %f\n---------\n", collisionY, collisionX, world->player.y, world->player.x, angle, tan(fmod(angle, RADIANS_90)));				
 	}
 	else if(RADIANS_180 < angle && angle < RADIANS_270)
 	{
@@ -210,6 +218,7 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, float a
 	}
 	
 	t_tile firstTile = getPointTile(collisionX, collisionY);
+
 
 	if(firstTile.x >= 0 &&
 	 firstTile.x < MAP_WIDTH &&
@@ -276,6 +285,10 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, float a
 					//printf("distance %f\n", collision_h->distance);
 		 collision_h->tile.x = firstTile.x;
 		 collision_h->tile.y = firstTile.y;
+		// if (angle >= 1.107 && angle <= 1.113)
+		//printf("collisionY %d collisionX %d [%d][%d]\n", collisionY, collisionX, firstTile.y, firstTile.x);	
+		//printf("collisionY %d collisionX %d [%d][%d] distance %f\n", collisionY, collisionX, firstTile.y, firstTile.x, collision_h->distance);	
+	//printf("collisionY %d collisionX %d angle %f\n", collisionY, collisionX, angle);
 		 
 		 return;
 		}
@@ -305,7 +318,7 @@ void	cast_ray(t_collision *collision, t_world *world, float angle)
 	 //printf("angle %f\n", angle);
 	dist_collision_vertical(collision_v, world, angle);
 	dist_collision_horizontal(collision_h, world, angle);
-	//printf("vertical %f, horizontal %f\n", collision_v->distance, collision_h->distance);
+	//printf("vertical %f, horizontal %f angle %f\n", collision_v->distance, collision_h->distance, angle);
 	//if (collision_h->distance <= 0 || collision_v->distance <= 0)
 //printf("vertical %f, horizontal %f angle %f real angle %f\n", collision_v->distance, collision_h->distance, angle, fmod(angle, RADIANS_90));
 //printf("vertical(%d, %d) horizontal(%d, %d) angle %f\n", collision_v->tile.y, collision_v->tile.x, collision_h->tile.y, collision_h->tile.x, angle);
@@ -319,7 +332,7 @@ else
 		*collision = *collision_h;
 
 		collision->distance *= cos(angle - world->player.orientation);
-//printf("collision (%d, %d) = %d angle %f\n", collision->tile.y, collision->tile.x, world->map[collision->tile.y][collision->tile.x], angle);
+//printf("collision (%d, %d) = %d distance %f angle %f\n", collision->tile.y, collision->tile.x, world->map[collision->tile.y][collision->tile.x], collision->distance, angle);
 }
 
 void	render(t_world *world)
@@ -329,7 +342,7 @@ void	render(t_world *world)
 	t_collision	*collision;
 
 	//printf("Player orientation %f\n", world->player.orientation);
-	//		printf("y: %d x: %d\n", world->player.y, world->player.x);						
+			//printf("y: %d x: %d\n", world->player.y, world->player.x);						
 	
 	// TODO: free
 	if (!(collision = (t_collision*)malloc(sizeof(t_collision) * WIN_WIDTH)))
@@ -352,7 +365,7 @@ void	render(t_world *world)
 		if (length < 0)
 		{
 			//printf("length %d distance %f angle %f\n", length, collision[i].distance, angle);
-			length = 3;	
+			length = 100;	
 		}
 		print_line(world, WIN_HEIGHT, i, BLACK);
 		print_line(world, length, i, RED);		

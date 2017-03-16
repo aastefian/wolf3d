@@ -23,6 +23,7 @@
 # define MAP_WIDTH 5
 # define MAP_HEIGHT 5
 # define FOV_RADIANS M_PI / 3
+# define FOV_DEGREES 60
 # define RADIANS_30 0.523599
 # define RADIANS_45 M_PI / 4
 # define RADIANS_60 1.0472
