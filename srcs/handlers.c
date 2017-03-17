@@ -68,7 +68,7 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, double a
 	if (0 < angle && angle < RADIANS_90)
 	{
 		collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		collisionY = world->player.y - ((collisionX - world->player.x) * tan(fmod(angle, RADIANS_90)));
+		collisionY = world->player.y + ((collisionX - world->player.x) * tan(fmod(angle, RADIANS_90)));
 	}
 	else if(RADIANS_90 < angle && angle < RADIANS_180)
 	{
@@ -127,7 +127,7 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, double a
 		if (0 < angle && angle < RADIANS_90)
 		{
 			collisionX += 64;
-			collisionY -= 64 * tan(fmod(angle, RADIANS_90));
+			collisionY += 64 * tan(fmod(angle, RADIANS_90));
 		}	
 		else if(RADIANS_90 < angle && angle < RADIANS_180)
 		{
@@ -194,8 +194,8 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, double 
 
 	if (0 < angle && angle < RADIANS_90)
 	{
-		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
-		collisionX = world->player.x + ((world->player.y - collisionY) / tan(fmod(angle, RADIANS_90)));
+		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		collisionX = world->player.x - ((world->player.y - collisionY) / tan(fmod(angle, RADIANS_90)));
 	}
 	else if(RADIANS_90 < angle && angle < RADIANS_180)
 	{
@@ -244,7 +244,7 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, double 
 	  {
 		if (0 < angle && angle < RADIANS_90)
 		{
-		  	collisionY -= 64;
+		  	collisionY += 64;
 			collisionX += CUBE_SIZE / tan(fmod(angle, RADIANS_90));
 		}
 		else if(RADIANS_90 < angle && angle < RADIANS_180)

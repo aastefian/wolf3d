@@ -73,7 +73,7 @@ int	main(int argc, char **argv)
 		load_map(&map, argv[1]);
 		world->player.x = 160;
 		world->player.y = 160;
-		world->player.orientation = 1.5707963268;
+		world->player.orientation = 0.7853981634;
 		world->map = map;
 		wolf3d(world);
 	}
