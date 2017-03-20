@@ -6,7 +6,7 @@
 /*   By: svilau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 10:50:12 by svilau            #+#    #+#             */
-/*   Updated: 2016/10/21 11:56:22 by svilau           ###   ########.fr       */
+/*   Updated: 2017/03/17 14:08:54 by svilau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ typedef struct		s_world
 void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
 int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
 void	load_map(int ***map, char *map_name);
+void	render(t_world *world);
 
 #endif

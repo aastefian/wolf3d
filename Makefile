@@ -8,7 +8,7 @@ SRC_DIR = ./srcs
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SDL_FLAGS = `sdl2-config --cflags --libs`
+SDL_FLAGS = `sdl-config --cflags --libs`
 
 CC = gcc
 CC_FLAGS = -Wall -Werror -Wextra
@@ -28,7 +28,7 @@ $(NAME):
 	@$(MAKE) $(MAKE_FLAGS) -C $(LIBFT_DIR)
 	@$(CC) $(CC_FLAG) -c $(SRC)
 	@mkdir -p bin
-	@$(CC) -o bin/$(NAME) $(OBJ) $(LIBFT) -lm $(SDL_FLAGS)
+	@$(CC) -o bin/$(NAME) $(OBJ) $(LIBFT)  -rpath ./Frameworks -F./Frameworks -framework SDL2
 	@echo "--Done---------------------"
 
 clean:

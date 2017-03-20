@@ -6,13 +6,13 @@
 /*   By: svilau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/20 10:49:50 by svilau            #+#    #+#             */
-/*   Updated: 2016/10/21 16:31:54 by svilau           ###   ########.fr       */
+/*   Updated: 2017/03/17 14:07:23 by svilau           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/wolf3d.h"
 #include "../libft/libft.h"
-#include <SDL2/SDL.h>
+#include "../frameworks/SDL2.framework/Headers/SDL.h"
 #include <fcntl.h>
 
 void pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color)
