@@ -68,12 +68,13 @@ int	main(int argc, char **argv)
 			ft_putstr("Not enough memory\n");
 			exit(0);
 		}
-		 FILE *saved = stdout;
-		stdout = fopen("log.txt", "w+");
+		// FILE *saved = stdout;
+		//stdout = fopen("log.txt", "w+");
 		load_map(&map, argv[1]);
-		world->player.x = 160;
-		world->player.y = 160;
-		world->player.orientation = 0.7853981634;
+		world->player.x = 1200;
+		world->player.y = 1200;
+		world->player.orientation = 1.5708;
+		world->player.speed = 10;
 		world->map = map;
 		wolf3d(world);
 	}

@@ -13,35 +13,45 @@
 #include "../includes/wolf3d.h"
 #include <stdlib.h>
 
-void	load_map(int ***map, char *map_name)
+void	alloc_map(int ***map, int map_width, int map_height)
 {
 	int i;
 
-	int mapWitdh = MAP_WIDTH;
-	int mapHeight = MAP_HEIGHT;
-
 	i = 0;
-	(void)map_name;
-	if (!(*map = (int **)malloc(sizeof(int *) * 5)))
-		return;
-	while (i < 5)
+	if (!(*map = (int **)malloc(sizeof(int *) * map_height)))
+		return ;
+	while (i < map_height)
 	{
-		if (!((*map)[i] = (int *)malloc(sizeof(int) * 5)))
-			return;
+		if (!((*map)[i] = (int *)malloc(sizeof(int) * map_width)))
+			return ;
 		i++;
 	}
+}
 
-	int local_map[5][5] = {
-	    {1, 1, 1, 1, 1},
-	    {1, 1, 0, 1, 1},
-	    {1, 0, 0, 0, 1},
-	    {1, 1, 0, 1, 1},
-	    {1, 1, 1, 1, 1},
+void	load_map(int ***map, char *map_name)
+{
+	int i;
+	int j;
+	int local_map[10][10] = {
+		{1, 1, 1, 1, 1, 1},
+		{1, 1, 0, 0, 1, 1},
+		{1, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 1},
+		{1, 1, 0, 0, 1, 1},		
+		{1, 1, 1, 1, 1, 1},
 	};
 
-	for (int i = 0; i < mapHeight; i++)
+	(void)map_name;
+	alloc_map(map, MAP_WIDTH, MAP_HEIGHT);
+	i = 0;
+	while (i < MAP_HEIGHT)
 	{
-		for (int j = 0; j < mapHeight; j++)
+		j = 0;
+		while (j < MAP_WIDTH)
+		{
 			(*map)[i][j] = local_map[i][j];
+			j++;
+		}
+		i++;
 	}
 }

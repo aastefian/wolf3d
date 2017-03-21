@@ -21,8 +21,9 @@
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
 # define WIN_BPP 32
-# define MAP_WIDTH 5
-# define MAP_HEIGHT 5
+# define MAP_WIDTH 6
+# define MAP_HEIGHT 6
+# define VIEW_DISTANCE 4
 # define FOV_RADIANS 1.0471975512
 # define RADIANS_30 0.5235987756
 # define RADIANS_45 0.7853981634
@@ -32,7 +33,7 @@
 # define RADIANS_270 4.7123889804
 # define RADIANS_359 6.2657320147 
 # define RADIANS_360 6.2831853072
-# define CUBE_SIZE 64
+# define CUBE_SIZE 512
 # define BLACK 0
 # define WHITE 16777215
 # define RED 16737380
@@ -69,6 +70,7 @@ typedef struct		s_player
 {
 	int		x;
 	int		y;
+	int		speed;
 	double	orientation;
 }					t_player;
 
