@@ -114,6 +114,8 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, double a
 				collision_v->distance = getDistanceHorizontal(world->player.x, collisionX, fmod(angle, RADIANS_90));
 		  	collision_v->tile.x = firstTile.x;
 		  	collision_v->tile.y = firstTile.y;
+			collision_v->x = collisionX;
+		 	collision_v->y = collisionY;
 			  
 //printf("y %d, x %d, collisionX %d, collisionY %d distance %f angle %f\n", firstTile.y, firstTile.x, collisionX, collisionY, collision_v->distance, angle);
 		
@@ -172,6 +174,8 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, double a
 					 //printf("distance %f\n", collision_v->distance);
 		  			collision_v->tile.x = firstTile.x;
 		  			collision_v->tile.y = firstTile.y;
+					collision_v->x = collisionX;
+		 			collision_v->y = collisionY;
 					  
 //printf("collisionY %d collisionX %d playerY %d playerX %d tang %f\n---------\n", collisionY, collisionX, world->player.y, world->player.x, fmod(angle, RADIANS_90));					  					  
 					  
@@ -237,6 +241,8 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, double 
 			//printf("distance %f\n", collision_h->distance);
 		  	collision_h->tile.x = firstTile.x;
 		  	collision_h->tile.y = firstTile.y;
+			collision_h->x = collisionX;
+			collision_h->y = collisionY;
 		  return;
 	  }
 	  int range = 0;
@@ -286,6 +292,8 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, double 
 					//printf("distance %f\n", collision_h->distance);
 		 collision_h->tile.x = firstTile.x;
 		 collision_h->tile.y = firstTile.y;
+		 collision_h->x = collisionX;
+		 collision_h->y = collisionY;
 		// if (angle >= 1.107 && angle <= 1.113)
 		//printf("collisionY %d collisionX %d [%d][%d]\n", collisionY, collisionX, firstTile.y, firstTile.x);	
 		//printf("collisionY %d collisionX %d [%d][%d] distance %f\n", collisionY, collisionX, firstTile.y, firstTile.x, collision_h->distance);	
@@ -367,10 +375,29 @@ void	render(t_world *world)
 		if (length < 0 || length > WIN_HEIGHT)
 			length = WIN_HEIGHT;	
 		print_line(world, WIN_HEIGHT, i, BLACK);
-		print_line(world, length, i, RED);		
+		printf("%d --- %d : [%d] [%d]\n", collision[i].x, collision[i].y, collision[i].tile.x, collision[i].tile.y);
+		
+		if (collision[i].x == collision[i].tile.x * CUBE_SIZE && world->player.x < collision[i].x)
+		{
+			
+			print_line(world, length, i, ORANGE);
+				
+		}
+		else if (collision[i].x == collision[i].tile.x * CUBE_SIZE + CUBE_SIZE - 1 && world->player.x > collision[i].x)
+		{
+			print_line(world, length, i, GREEN);
+		}
+		else if (collision[i].y == collision[i].tile.y * CUBE_SIZE + CUBE_SIZE - 1 && world->player.y > collision[i].y)
+		{
+			print_line(world, length, i, BLUE);	
+		}
+		else if (collision[i].y == collision[i].tile.y * CUBE_SIZE && world->player.y < collision[i].y)
+		{
+			print_line(world, length, i, RED);
+		}
 	 	i++;
-	 }
-	 
+	 }	 
+	 printf("-------------------------End of frame -----------------\n");
 }
 
 int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
@@ -404,27 +431,27 @@ int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
 		{
 				world->player.y -= sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
 				world->player.x += cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("----------\nTOP-RIGHT y: %f x: %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed, cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed);
+				//printf("----------\nTOP-RIGHT y: %f x: %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed, cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed);
 		}
 		else if(RADIANS_90 < world->player.orientation && world->player.orientation < RADIANS_180)
 		{
 				world->player.y -= cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
 				world->player.x -= sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("TOP-LEFT ");				
+				//printf("TOP-LEFT ");				
 		}
 		else if(RADIANS_180 < world->player.orientation && world->player.orientation < RADIANS_270)
 		{
 				world->player.y += sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
 				world->player.x -= cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("BOTTOM-LEFT ");				
+				//printf("BOTTOM-LEFT ");				
 		}
 		else if(RADIANS_270 < world->player.orientation && world->player.orientation < RADIANS_360)
 		{
 				world->player.y += cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
 				world->player.x += sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("BOTTOM-RIGHT %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * 2);				
+				//printf("BOTTOM-RIGHT %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * 2);				
 		}
-				printf("%d : %d\n---------\n", world->player.x, world->player.y);
+				//printf("%d : %d\n---------\n", world->player.x, world->player.y);
 
 			//printf("%d\n", world->map[(world->player.y - 50) / CUBE_SIZE][world->player.x / CUBE_SIZE]);
 			//if (world->map[(world->player.y - 2) / CUBE_SIZE][world->player.x / CUBE_SIZE] == 0){
@@ -475,6 +502,10 @@ int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
 			if (world->player.orientation < 0)
 				world->player.orientation += PI * 2;
 			render(world);
+		}
+		if (event.key.keysym.sym == SDLK_e)
+		{
+			map_editor(world);
 		}
 		/*
 		if (event.key.keysym.sym == SDLK_RIGHT)

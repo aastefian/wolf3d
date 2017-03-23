@@ -32,7 +32,7 @@ void	load_map(int ***map, char *map_name)
 {
 	int i;
 	int j;
-	int local_map[10][10] = {
+	int local_map[6][6] = {
 		{1, 1, 1, 1, 1, 1},
 		{1, 1, 0, 0, 1, 1},
 		{1, 0, 0, 0, 0, 1},

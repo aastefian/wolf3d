@@ -16,8 +16,9 @@ CC_FLAGS = -Wall -Werror -Wextra
 SRC =	$(SRC_DIR)/main.c \
 		$(SRC_DIR)/map_processing.c \
 		$(SRC_DIR)/handlers.c \
+		$(SRC_DIR)/map_editor.c \
 
-OBJ = main.o map_processing.o handlers.o
+OBJ = main.o map_processing.o handlers.o map_editor.o
 
 RM = rm -f
 

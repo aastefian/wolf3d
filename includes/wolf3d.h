@@ -20,10 +20,12 @@
 // # define WIN_HEIGHT (int) (540 / 100)
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
+# define EDITOR_WIN_WIDTH 600
+# define EDITOR_WIN_HEIGHT 600
 # define WIN_BPP 32
 # define MAP_WIDTH 6
 # define MAP_HEIGHT 6
-# define VIEW_DISTANCE 4
+# define VIEW_DISTANCE 10
 # define FOV_RADIANS 1.0471975512
 # define RADIANS_30 0.5235987756
 # define RADIANS_45 0.7853981634
@@ -37,6 +39,9 @@
 # define BLACK 0
 # define WHITE 16777215
 # define RED 16737380
+# define GREEN 8190976
+# define ORANGE 16753920
+# define BLUE 49151
 # define BOUND_RIGHT 190
 
 typedef struct		s_2d_p
@@ -62,6 +67,8 @@ typedef struct		s_tile
 
 typedef struct		s_collision
 {
+	int x;
+	int y;
 	t_tile	tile;
 	double 	distance;
 }					t_collision;
@@ -87,8 +94,10 @@ typedef struct		s_world
 }					t_world;
 
 void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
-int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
+int		wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
 void	load_map(int ***map, char *map_name);
 void	render(t_world *world);
+void    map_editor(t_world *world);
+void	print_line(t_world *world, int length, int x, int color);
 
 #endif

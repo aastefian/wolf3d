@@ -68,11 +68,11 @@ int	main(int argc, char **argv)
 			ft_putstr("Not enough memory\n");
 			exit(0);
 		}
-		// FILE *saved = stdout;
-		//stdout = fopen("log.txt", "w+");
+		 FILE *saved = stdout;
+		stdout = fopen("log.txt", "w+");
 		load_map(&map, argv[1]);
-		world->player.x = 1200;
-		world->player.y = 1200;
+		world->player.x = 1500;
+		world->player.y = 1000;
 		world->player.orientation = 1.5708;
 		world->player.speed = 10;
 		world->map = map;
