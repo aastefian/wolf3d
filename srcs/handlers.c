@@ -23,7 +23,8 @@ void	print_line(t_world *world, int length, int x, int color)
 	y = 0;
 	while (y < WIN_HEIGHT - (WIN_HEIGHT - length) / 2)
 	{
-		if(y < (WIN_HEIGHT - length) / 2) {
+		if (y < (WIN_HEIGHT - length) / 2)
+		{
 			y++;
 			continue;
 		}
@@ -39,152 +40,109 @@ void	collision_initialize(t_collision *collision)
 	collision->tile.y = 0;
 }
 
-t_tile getPointTile(int x, int y){
-	t_tile pointTile;
+t_tile	get_point_tile(int x, int y)
+{
+	t_tile point_tile;
 
-	pointTile.x = floor(x / CUBE_SIZE);
-	pointTile.y = floor(y / CUBE_SIZE);
-
-	return (pointTile);
+	point_tile.x = floor(x / CUBE_SIZE);
+	point_tile.y = floor(y / CUBE_SIZE);
+	return (point_tile);
 }
 
-double getDistance(int x1,int x2,double angle){
-	//printf("x1 : %d\n x2 : %d\n angle : %f\n distance : %f\n--------\n", x1, x2, angle, abs(x1 - x2) / cos(angle));
-	//printf("%f\n", FOV_RADIANS);
+double	get_distance_cos(int x1, int x2, double angle)
+{
 	return (abs(x1 - x2) / cos(angle));
 }
 
-double getDistanceHorizontal(int x1,int x2,double angle){
+double	get_distance_sin(int x1, int x2, double angle)
+{
 	return (abs(x1 - x2) / sin(angle));
 }
 
-void		dist_collision_vertical(t_collision *collision_v, t_world *world, double angle)
+void	get_first_intersection_vertical(double *collision_x, double *collision_y, int player_x, int player_y, double angle)
 {
-	double collisionX;
-	double collisionY;
-	
-	// If angle to the right x always goes to right and +1
-	
 	if (0 < angle && angle < RADIANS_90)
 	{
-		collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		collisionY = world->player.y - ((collisionX - world->player.x) * tan(fmod(angle, RADIANS_90))) + 1;
+		*collision_x = floor(player_x / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		*collision_y = player_y - ((*collision_x - player_x) * tan(fmod(angle, RADIANS_90))) + 1;
 	}
-	else if(RADIANS_90 < angle && angle < RADIANS_180)
+	else if (RADIANS_90 < angle && angle < RADIANS_180)
 	{
-		collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE - 1;
-		collisionY = world->player.y - ((world->player.x - collisionX) / tan(fmod(angle, RADIANS_90))) + 1;
+		*collision_x = floor(player_x / CUBE_SIZE) * CUBE_SIZE - 1;
+		*collision_y = player_y - ((player_x - *collision_x) / tan(fmod(angle, RADIANS_90))) + 1;
 	}
-	else if(RADIANS_180 < angle && angle < RADIANS_270)
+	else if (RADIANS_180 < angle && angle < RADIANS_270)
 	{
-		collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE - 1;
-		collisionY = world->player.y + ((world->player.x - collisionX) * tan(fmod(angle, RADIANS_90)));
+		*collision_x = floor(player_x / CUBE_SIZE) * CUBE_SIZE - 1;
+		*collision_y = player_y + ((player_x - *collision_x) * tan(fmod(angle, RADIANS_90)));
 
 	}
-	else if(RADIANS_270 < angle && angle < RADIANS_360)
+	else if (RADIANS_270 < angle && angle < RADIANS_360)
 	{
-		collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		collisionY = world->player.y + ((collisionX - world->player.x) / tan(fmod(angle, RADIANS_90)));
+		*collision_x = floor(player_x / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		*collision_y = player_y + ((*collision_x - player_x) / tan(fmod(angle, RADIANS_90)));
 	}
-	else
-		//collisionX = floor(world->player.x / CUBE_SIZE) * CUBE_SIZE - 1;
-	{
-	printf("Going Out Of Programmed Sequence\n");
-	exit(0);
-	}                                                                                        
+}
 
-	t_tile firstTile = getPointTile(collisionX, collisionY);
-	//printf("collisionY %d, collisionX %d, testAngle %f, angle %f\n", collisionY, collisionX, fmod(angle, RADIANS_90), angle);
+int 	check_collision_vertical(t_collision *collision_v,  double collision_x, double collision_y, int player_x, int **map, double angle)
+{
+	t_tile first_tile;
 	
-	
+	first_tile = get_point_tile(collision_x, collision_y);
+	if (first_tile.x >= 0 && first_tile.x < MAP_WIDTH && first_tile.y >= 0 &&
+		first_tile.y < MAP_HEIGHT && map[first_tile.y][first_tile.x])
+	{
+		if (0 < angle && angle < RADIANS_90)
+			collision_v->distance = get_distance_cos(player_x, collision_x, fmod(angle, RADIANS_90));
+		else if (RADIANS_90 < angle && angle < RADIANS_180)
+			collision_v->distance = get_distance_sin(player_x, collision_x, fmod(angle, RADIANS_90));
+		else if (RADIANS_180 < angle && angle < RADIANS_270)
+			collision_v->distance = get_distance_cos(player_x, collision_x, fmod(angle, RADIANS_90));
+		else if (RADIANS_270 < angle && angle < RADIANS_360)
+			collision_v->distance = get_distance_sin(player_x, collision_x, fmod(angle, RADIANS_90));
+		collision_v->tile.x = first_tile.x;
+		collision_v->tile.y = first_tile.y;
+		collision_v->x = collision_x;
+		collision_v->y = collision_y;
+		return (1);
+	}
+	return (0);
+}
 
-	if(firstTile.x >= 0 &&
-	 firstTile.x < MAP_WIDTH &&
-	  firstTile.y >= 0 &&
-	  firstTile.y < MAP_HEIGHT &&
-	  world->map[firstTile.y][firstTile.x]) {
-		  //printf("angle %f\n", angle);
-		  if (0 < angle && angle < RADIANS_90)
-		 		collision_v->distance = getDistance(world->player.x, collisionX, fmod(angle, RADIANS_90));		 		
-		 else if(RADIANS_90 < angle && angle < RADIANS_180)
-			 	collision_v->distance = getDistanceHorizontal(world->player.x, collisionX, fmod(angle, RADIANS_90));
-		 else if(RADIANS_180 < angle && angle < RADIANS_270)
-			 	collision_v->distance = getDistance(world->player.x, collisionX, fmod(angle, RADIANS_90));
-		else if(RADIANS_270 < angle && angle < RADIANS_360)
-				collision_v->distance = getDistanceHorizontal(world->player.x, collisionX, fmod(angle, RADIANS_90));
-		  	collision_v->tile.x = firstTile.x;
-		  	collision_v->tile.y = firstTile.y;
-			collision_v->x = collisionX;
-		 	collision_v->y = collisionY;
-			  
-//printf("y %d, x %d, collisionX %d, collisionY %d distance %f angle %f\n", firstTile.y, firstTile.x, collisionX, collisionY, collision_v->distance, angle);
-		
-			  
-			  //printf("collision(%d, %d)\n", collisionY, collisionX);
-		  return;
-	  }
+void	dist_collision_vertical(t_collision *collision_v, t_world *world, double angle)
+{
+	double	collision_x;
+	double	collision_y;
+	
+	get_first_intersection_vertical(&collision_x, &collision_y, world->player.x, world->player.y, angle);
+	if (check_collision_vertical(collision_v, collision_x, collision_y, world->player.x, world->map, angle))
+		return;
+
 	  int range = 0;
 	  while (1)
 	  {
 		if (0 < angle && angle < RADIANS_90)
 		{
-			collisionX += CUBE_SIZE;
-			collisionY -= CUBE_SIZE * tan(fmod(angle, RADIANS_90));
+			collision_x += CUBE_SIZE;
+			collision_y -= CUBE_SIZE * tan(fmod(angle, RADIANS_90));
 		}	
-		else if(RADIANS_90 < angle && angle < RADIANS_180)
+		else if (RADIANS_90 < angle && angle < RADIANS_180)
 		{
-			collisionX -= CUBE_SIZE;
-			collisionY -= CUBE_SIZE / tan(fmod(angle, RADIANS_90));
-			
+			collision_x -= CUBE_SIZE;
+			collision_y -= CUBE_SIZE / tan(fmod(angle, RADIANS_90));
 		}
-		else if(RADIANS_180 < angle && angle < RADIANS_270)
+		else if (RADIANS_180 < angle && angle < RADIANS_270)
 		{
-			collisionX -= CUBE_SIZE;
-			collisionY += CUBE_SIZE * tan(fmod(angle, RADIANS_90));	
+			collision_x -= CUBE_SIZE;
+			collision_y += CUBE_SIZE * tan(fmod(angle, RADIANS_90));
 		}
-		else if(RADIANS_270 < angle && angle < RADIANS_360)
+		else if (RADIANS_270 < angle && angle < RADIANS_360)
 		{
-			collisionX += CUBE_SIZE;
-			collisionY += CUBE_SIZE / tan(fmod(angle, RADIANS_90));	
+			collision_x += CUBE_SIZE;
+			collision_y += CUBE_SIZE / tan(fmod(angle, RADIANS_90));
 		}
-		else
-		{
-			printf("Going Out Of Programmed Sequence\n");
-			//exit(0);
-		}
-
-		  
-		  //printf("collisionY After %d\n", collisionY);
-		  firstTile = getPointTile(collisionX, collisionY);
-		  
-		 
-		if(firstTile.x >= 0 &&
-				firstTile.x < MAP_WIDTH &&
-				firstTile.y >= 0 &&
-				firstTile.y < MAP_HEIGHT &&
-	  			world->map[firstTile.y][firstTile.x]) {
-		 			if (0 < angle && angle < RADIANS_90)
-		 				collision_v->distance = getDistance(world->player.x, collisionX, fmod(angle, RADIANS_90));		 		
-					 else if(RADIANS_90 < angle && angle < RADIANS_180)
-					 	collision_v->distance = getDistanceHorizontal(world->player.x, collisionX, fmod(angle, RADIANS_90));
-					 else if(RADIANS_180 < angle && angle < RADIANS_270)
-			 			collision_v->distance = getDistance(world->player.x, collisionX, fmod(angle, RADIANS_90));
-					 else if(RADIANS_270 < angle && angle < RADIANS_360)
-						collision_v->distance = getDistanceHorizontal(world->player.x, collisionX, fmod(angle, RADIANS_90));
-					 //printf("distance %f\n", collision_v->distance);
-		  			collision_v->tile.x = firstTile.x;
-		  			collision_v->tile.y = firstTile.y;
-					collision_v->x = collisionX;
-		 			collision_v->y = collisionY;
-					  
-//printf("collisionY %d collisionX %d playerY %d playerX %d tang %f\n---------\n", collisionY, collisionX, world->player.y, world->player.x, fmod(angle, RADIANS_90));					  					  
-					  
-					 // if (angle < 0.785398)
-		//printf("collision(%d, %d) angle %f\n", collisionY / CUBE_SIZE, collisionX / CUBE_SIZE, angle);			  
-//printf("y %d, x %d, collisionX %d, collisionY %d distance %f angle %f\n", firstTile.y, firstTile.x, collisionX, collisionY, collision_v->distance, angle);
-
-		  			return;
-		}
+		if (check_collision_vertical(collision_v, collision_x, collision_y, world->player.x, world->map, angle))
+			return;
 		if (range == VIEW_DISTANCE)
 			break;
 		range++;
@@ -193,56 +151,47 @@ void		dist_collision_vertical(t_collision *collision_v, t_world *world, double a
 
 void	dist_collision_horizontal(t_collision *collision_h, t_world *world, double angle)
 {
-	double collisionY;
-	double collisionX;
+	double collision_y;
+	double collision_x;
 
 	if (0 < angle && angle < RADIANS_90)
 	{
-		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
-		collisionX = world->player.x + ((world->player.y - collisionY) / tan(fmod(angle, RADIANS_90)));
+		collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
+		collision_x = world->player.x + ((world->player.y - collision_y) / tan(fmod(angle, RADIANS_90)));
 	}
-	else if(RADIANS_90 < angle && angle < RADIANS_180)
+	else if (RADIANS_90 < angle && angle < RADIANS_180)
 	{
-		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
-		collisionX = world->player.x - ((world->player.y - collisionY) * tan(fmod(angle, RADIANS_90))) + 1;
+		collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
+		collision_x = world->player.x - ((world->player.y - collision_y) * tan(fmod(angle, RADIANS_90))) + 1;
 	}
-	else if(RADIANS_180 < angle && angle < RADIANS_270)
+	else if (RADIANS_180 < angle && angle < RADIANS_270)
 	{
-		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		collisionX = world->player.x - ((collisionY - world->player.y) / tan(fmod(angle, RADIANS_90))) + 1;	
+		collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		collision_x = world->player.x - ((collision_y - world->player.y) / tan(fmod(angle, RADIANS_90))) + 1;
 	}
-	else if(RADIANS_270 < angle && angle < RADIANS_360)
+	else if (RADIANS_270 < angle && angle < RADIANS_360)
 	{
-		collisionY = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		collisionX = world->player.x + ((collisionY - world->player.y) * tan(fmod(angle, RADIANS_90)));	
+		collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		collision_x = world->player.x + ((collision_y - world->player.y) * tan(fmod(angle, RADIANS_90)));
 	}
-	else
-	{
-		printf("Going Out Of Programmed Sequence \n");
-		//exit(0);
-	}
-	
-	t_tile firstTile = getPointTile(collisionX, collisionY);
-
-
-	if(firstTile.x >= 0 &&
-	 firstTile.x < MAP_WIDTH &&
-	  firstTile.y >= 0 &&
-	  firstTile.y < MAP_HEIGHT &&
-	  world->map[firstTile.y][firstTile.x]) {
+	t_tile first_tile = get_point_tile(collision_x, collision_y);
+	if (first_tile.x >= 0 &&
+	 first_tile.x < MAP_WIDTH &&
+	  first_tile.y >= 0 &&
+	  first_tile.y < MAP_HEIGHT &&
+	  world->map[first_tile.y][first_tile.x]) {
 		if (0 < angle && angle < RADIANS_90)
-			 collision_h->distance = getDistanceHorizontal(world->player.y, collisionY, fmod(angle, RADIANS_90));
-		else if(RADIANS_90 < angle && angle < RADIANS_180)
-			collision_h->distance = getDistance(world->player.y, collisionY, fmod(angle, RADIANS_90));
-		else if(RADIANS_180 < angle && angle < RADIANS_270)
-			collision_h->distance = getDistanceHorizontal(world->player.y, collisionY, fmod(angle, RADIANS_90));
-		else if(RADIANS_270 < angle && angle < RADIANS_360)
-			collision_h->distance = getDistance(world->player.y, collisionY, fmod(angle, RADIANS_90));
-			//printf("distance %f\n", collision_h->distance);
-		  	collision_h->tile.x = firstTile.x;
-		  	collision_h->tile.y = firstTile.y;
-			collision_h->x = collisionX;
-			collision_h->y = collisionY;
+			 collision_h->distance = get_distance_sin(world->player.y, collision_y, fmod(angle, RADIANS_90));
+		else if (RADIANS_90 < angle && angle < RADIANS_180)
+			collision_h->distance = get_distance_cos(world->player.y, collision_y, fmod(angle, RADIANS_90));
+		else if (RADIANS_180 < angle && angle < RADIANS_270)
+			collision_h->distance = get_distance_sin(world->player.y, collision_y, fmod(angle, RADIANS_90));
+		else if (RADIANS_270 < angle && angle < RADIANS_360)
+			collision_h->distance = get_distance_cos(world->player.y, collision_y, fmod(angle, RADIANS_90));
+		  	collision_h->tile.x = first_tile.x;
+		  	collision_h->tile.y = first_tile.y;
+			collision_h->x = collision_x;
+			collision_h->y = collision_y;
 		  return;
 	  }
 	  int range = 0;
@@ -250,55 +199,42 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world, double 
 	  {
 		if (0 < angle && angle < RADIANS_90)
 		{
-		  	collisionY -= CUBE_SIZE;
-			collisionX += CUBE_SIZE / tan(fmod(angle, RADIANS_90));
+		  	collision_y -= CUBE_SIZE;
+			collision_x += CUBE_SIZE / tan(fmod(angle, RADIANS_90));
 		}
-		else if(RADIANS_90 < angle && angle < RADIANS_180)
+		else if (RADIANS_90 < angle && angle < RADIANS_180)
 		{
-			collisionY -= CUBE_SIZE;
-			collisionX -= CUBE_SIZE * tan(fmod(angle, RADIANS_90));
+			collision_y -= CUBE_SIZE;
+			collision_x -= CUBE_SIZE * tan(fmod(angle, RADIANS_90));
 		}
-		else if(RADIANS_180 < angle && angle < RADIANS_270)
+		else if (RADIANS_180 < angle && angle < RADIANS_270)
 		{
-			collisionY += CUBE_SIZE;
-			collisionX -= CUBE_SIZE / tan(fmod(angle, RADIANS_90));	
+			collision_y += CUBE_SIZE;
+			collision_x -= CUBE_SIZE / tan(fmod(angle, RADIANS_90));
 		}
-		else if(RADIANS_270 < angle && angle < RADIANS_360)
+		else if (RADIANS_270 < angle && angle < RADIANS_360)
 		{
-			collisionY += CUBE_SIZE;
-			collisionX += CUBE_SIZE * tan(fmod(angle, RADIANS_90));	
+			collision_y += CUBE_SIZE;
+			collision_x += CUBE_SIZE * tan(fmod(angle, RADIANS_90));
 		}
-		else
-		{
-			printf("Going Out Of Programmed Sequence\n");
-			//exit(0);
-		}
-		  //printf("collisionY %d collisionX %d\n", collisionY, collisionX);
-		  firstTile = getPointTile(collisionX, collisionY);
-		 //printf("y: %d x: %d\n", firstTile.y, firstTile.x);
-		if(firstTile.x >= 0 &&
-				firstTile.x < MAP_WIDTH &&
-				firstTile.y >= 0 &&
-				firstTile.y < MAP_HEIGHT &&
-	  			world->map[firstTile.y][firstTile.x]) {
+		 first_tile = get_point_tile(collision_x, collision_y);
+		if (first_tile.x >= 0 &&
+				first_tile.x < MAP_WIDTH &&
+				first_tile.y >= 0 &&
+				first_tile.y < MAP_HEIGHT &&
+	  			world->map[first_tile.y][first_tile.x]) {
 		 	if (0 < angle && angle < RADIANS_90)
-				collision_h->distance = getDistanceHorizontal(world->player.y, collisionY, fmod(angle, RADIANS_90));
-			else if(RADIANS_90 < angle && angle < RADIANS_180)
-				collision_h->distance = getDistance(world->player.y, collisionY, fmod(angle, RADIANS_90));
-			else if(RADIANS_180 < angle && angle < RADIANS_270)
-		 		collision_h->distance = getDistanceHorizontal(world->player.y, collisionY, fmod(angle, RADIANS_90));
-			else if(RADIANS_270 < angle && angle < RADIANS_360)
-				collision_h->distance = getDistance(world->player.y, collisionY, fmod(angle, RADIANS_90));
-					//printf("distance %f\n", collision_h->distance);
-		 collision_h->tile.x = firstTile.x;
-		 collision_h->tile.y = firstTile.y;
-		 collision_h->x = collisionX;
-		 collision_h->y = collisionY;
-		// if (angle >= 1.107 && angle <= 1.113)
-		//printf("collisionY %d collisionX %d [%d][%d]\n", collisionY, collisionX, firstTile.y, firstTile.x);	
-		//printf("collisionY %d collisionX %d [%d][%d] distance %f\n", collisionY, collisionX, firstTile.y, firstTile.x, collision_h->distance);	
-	//printf("collisionY %d collisionX %d angle %f\n", collisionY, collisionX, angle);
-		 
+				collision_h->distance = get_distance_sin(world->player.y, collision_y, fmod(angle, RADIANS_90));
+			else if (RADIANS_90 < angle && angle < RADIANS_180)
+				collision_h->distance = get_distance_cos(world->player.y, collision_y, fmod(angle, RADIANS_90));
+			else if (RADIANS_180 < angle && angle < RADIANS_270)
+		 		collision_h->distance = get_distance_sin(world->player.y, collision_y, fmod(angle, RADIANS_90));
+			else if (RADIANS_270 < angle && angle < RADIANS_360)
+				collision_h->distance = get_distance_cos(world->player.y, collision_y, fmod(angle, RADIANS_90));
+		 collision_h->tile.x = first_tile.x;
+		 collision_h->tile.y = first_tile.y;
+		 collision_h->x = collision_x;
+		 collision_h->y = collision_y;
 		 return;
 		}
 		if (range == VIEW_DISTANCE)
@@ -324,24 +260,41 @@ void	cast_ray(t_collision *collision, t_world *world, double angle)
 	}
 	collision_initialize(collision_h);
 	collision_initialize(collision_v);
-	 //printf("angle %f\n", angle);
 	dist_collision_vertical(collision_v, world, angle);
 	dist_collision_horizontal(collision_h, world, angle);
-	//printf("vertical %f, horizontal %f angle %f\n", collision_v->distance, collision_h->distance, angle);
-	//if (collision_h->distance <= 0 || collision_v->distance <= 0)
-//printf("vertical %f, horizontal %f angle %f real angle %f\n", collision_v->distance, collision_h->distance, angle, fmod(angle, RADIANS_90));
-//printf("vertical(%d, %d) horizontal(%d, %d) angle %f\n", collision_v->tile.y, collision_v->tile.x, collision_h->tile.y, collision_h->tile.x, angle);
-if (collision_h->distance <= 0)
-	*collision = *collision_v;
-else if (collision_v->distance <= 0)
-	*collision = *collision_h;
-else if (collision_v->distance < collision_h->distance)
+	if (collision_h->distance <= 0)
+	{
 		*collision = *collision_v;
-else
+		if (world->player.x <= (*collision).x)
+			(*collision).color = EAST_COLOR;
+		else
+			(*collision).color = WEST_COLOR;
+	}
+	else if (collision_v->distance <= 0)
+	{
 		*collision = *collision_h;
-
-		collision->distance *= cos(angle - world->player.orientation);
-//printf("collision (%d, %d) = %d distance %f angle %f\n", collision->tile.y, collision->tile.x, world->map[collision->tile.y][collision->tile.x], collision->distance, angle);
+		if (world->player.y <= (*collision).y)
+			(*collision).color = SOUTH_COLOR;
+		else
+			(*collision).color = NORTH_COLOR;
+	}
+	else if (collision_v->distance < collision_h->distance)
+	{
+		*collision = *collision_v;
+		if (world->player.x <= (*collision).x)
+			(*collision).color = EAST_COLOR;
+		else
+			(*collision).color = WEST_COLOR;
+	}
+	else
+	{
+		*collision = *collision_h;
+		if (world->player.y <= (*collision).y)
+			(*collision).color = SOUTH_COLOR;
+		else
+			(*collision).color = NORTH_COLOR;
+	}
+	collision->distance *= cos(angle - world->player.orientation);
 }
 
 void	render(t_world *world)
@@ -350,11 +303,6 @@ void	render(t_world *world)
 	double		angle;
 	t_collision	*collision;
 
-	//printf("Player orientation %f\n", world->player.orientation);
-			//printf("y: %d x: %d\n", world->player.y, world->player.x);						
-	
-	// TODO: free
-	//printf("%d\n", world->player.y);
 	if (!(collision = (t_collision*)malloc(sizeof(t_collision) * WIN_WIDTH)))
 	{
 		ft_putstr("Not enough memory\n");
@@ -366,53 +314,79 @@ void	render(t_world *world)
 	{
 		angle = fmod((world->player.orientation - (FOV_RADIANS / (double) WIN_WIDTH / 2) + (FOV_RADIANS/2) - (FOV_RADIANS * i / (double) WIN_WIDTH)), PI * 2);
 		if (angle < 0)
-				angle += PI * 2; 
-		//printf("angle %f\n", angle);
+				angle += PI * 2;
 	 	cast_ray(&collision[i], world, angle);
-//printf("collision[%d]->distance %f\n", i, collision[i].distance);	
-//printf("distance %d\n", collision[i].distance);		 
 		int length = (int)(CUBE_SIZE / (collision[i].distance) * ((WIN_WIDTH / 2) * tan(RADIANS_30)));
 		if (length < 0 || length > WIN_HEIGHT)
-			length = WIN_HEIGHT;	
+			length = WIN_HEIGHT;
 		print_line(world, WIN_HEIGHT, i, BLACK);
-		printf("%d --- %d : [%d] [%d]\n", collision[i].x, collision[i].y, collision[i].tile.x, collision[i].tile.y);
-		
-		if (collision[i].x == collision[i].tile.x * CUBE_SIZE && world->player.x < collision[i].x)
-		{
-			
-			print_line(world, length, i, ORANGE);
-				
-		}
-		else if (collision[i].x == collision[i].tile.x * CUBE_SIZE + CUBE_SIZE - 1 && world->player.x > collision[i].x)
-		{
-			print_line(world, length, i, GREEN);
-		}
-		else if (collision[i].y == collision[i].tile.y * CUBE_SIZE + CUBE_SIZE - 1 && world->player.y > collision[i].y)
-		{
-			print_line(world, length, i, BLUE);	
-		}
-		else if (collision[i].y == collision[i].tile.y * CUBE_SIZE && world->player.y < collision[i].y)
-		{
-			print_line(world, length, i, RED);
-		}
+		print_line(world, length, i , collision[i].color);
 	 	i++;
 	 }	 
-	 printf("-------------------------End of frame -----------------\n");
 }
 
-int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
+void	move_player_forward(int *playerX, int *playerY, double playerOrientation, int playerSpeed)
 {
-	if(event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
-    {
-		char end[80]= "------------------------------\nEnd of log\n------------------------------\n";
-		//Quit the program
+	if (0 < playerOrientation && playerOrientation < RADIANS_90)
+	{
+		*playerY -= sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX += cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+	else if (RADIANS_90 < playerOrientation && playerOrientation < RADIANS_180)
+	{
+		*playerY -= cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX -= sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+	else if (RADIANS_180 < playerOrientation && playerOrientation < RADIANS_270)
+	{
+		*playerY += sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX -= cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+	else if (RADIANS_270 < playerOrientation && playerOrientation < RADIANS_360)
+	{
+		*playerY += cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX += sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+}
 
-		printf("%s", end);
+void	move_player_backward(int *playerX, int *playerY, double playerOrientation, int playerSpeed)
+{
+	if (0 < playerOrientation && playerOrientation < RADIANS_90)
+	{
+		*playerY += sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX -= cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+	else if (RADIANS_90 < playerOrientation && playerOrientation < RADIANS_180)
+	{
+		*playerY += cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX += sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+	else if (RADIANS_180 < playerOrientation && playerOrientation < RADIANS_270)
+	{
+		*playerY -= sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX += cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+	else if (RADIANS_270 < playerOrientation && playerOrientation < RADIANS_360)
+	{
+		*playerY -= cos(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+		*playerX -= sin(fmod(playerOrientation, RADIANS_90)) * playerSpeed;
+	}
+}
+
+int		wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
+{
+	if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
         return (1);
-    }
 	if (event.type == SDL_KEYDOWN)
 	{
-		
+		if (event.key.keysym.sym == SDLK_LSHIFT)
+		{
+			if (world->player.speed == 10)
+				world->player.speed *= 10;
+			else
+				world->player.speed = 10;
+			render(world);
+		}
 		if (event.key.keysym.sym == SDLK_x)
 		{
 			world->player.orientation = fmod((world->player.orientation - 0.04), PI * 2);
@@ -423,113 +397,34 @@ int	wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
 		if (event.key.keysym.sym == SDLK_z)
 		{
 			world->player.orientation = fmod((world->player.orientation + 0.04), PI * 2);
-			render(world);	
+			render(world);
 		}
 		if (event.key.keysym.sym == SDLK_UP)
 		{
-			if (0 < world->player.orientation && world->player.orientation < RADIANS_90)
-		{
-				world->player.y -= sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x += cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				//printf("----------\nTOP-RIGHT y: %f x: %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed, cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed);
-		}
-		else if(RADIANS_90 < world->player.orientation && world->player.orientation < RADIANS_180)
-		{
-				world->player.y -= cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x -= sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				//printf("TOP-LEFT ");				
-		}
-		else if(RADIANS_180 < world->player.orientation && world->player.orientation < RADIANS_270)
-		{
-				world->player.y += sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x -= cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				//printf("BOTTOM-LEFT ");				
-		}
-		else if(RADIANS_270 < world->player.orientation && world->player.orientation < RADIANS_360)
-		{
-				world->player.y += cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x += sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				//printf("BOTTOM-RIGHT %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * 2);				
-		}
-				//printf("%d : %d\n---------\n", world->player.x, world->player.y);
-
-			//printf("%d\n", world->map[(world->player.y - 50) / CUBE_SIZE][world->player.x / CUBE_SIZE]);
-			//if (world->map[(world->player.y - 2) / CUBE_SIZE][world->player.x / CUBE_SIZE] == 0){
-			//	world->player.y -= (sin(fmod(world->player.orientation, RADIANS_90)) * 3);
-		//		world->player.x += (cos(fmod(world->player.orientation, RADIANS_90)) * 3);
-		//	}
+			move_player_forward(&(world->player.x), &(world->player.y), world->player.orientation, world->player.speed);
 			render(world);
 		}
 		if (event.key.keysym.sym == SDLK_DOWN)
 		{
-			if (0 < world->player.orientation && world->player.orientation < RADIANS_90)
-		{
-				world->player.y += sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x -= cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("----------\nTOP-RIGHT y: %f x: %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed, cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed);
-		}
-		else if(RADIANS_90 < world->player.orientation && world->player.orientation < RADIANS_180)
-		{
-				world->player.y += cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x += sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("TOP-LEFT ");				
-		}
-		else if(RADIANS_180 < world->player.orientation && world->player.orientation < RADIANS_270)
-		{
-				world->player.y -= sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x += cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("BOTTOM-LEFT ");				
-		}
-		else if(RADIANS_270 < world->player.orientation && world->player.orientation < RADIANS_360)
-		{
-				world->player.y -= cos(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				world->player.x -= sin(fmod(world->player.orientation, RADIANS_90)) * world->player.speed;
-				printf("BOTTOM-RIGHT %f\n", sin(fmod(world->player.orientation, RADIANS_90)) * 2);				
-		}
-			//if (world->map[(world->player.y + 2) / CUBE_SIZE][world->player.x / CUBE_SIZE] == 0)			
-			//	world->player.y -= (sin(world->player.orientation) * 2.3);
-			//	world->player.x -= (sin(world->player.orientation) * 2.3);
+			move_player_backward(&(world->player.x), &(world->player.y), world->player.orientation, world->player.speed);
 			render(world);
 		}
 		if (event.key.keysym.sym == SDLK_LEFT)
 		{
-			world->player.orientation = fmod((world->player.orientation + 0.04), PI * 2);			
+			world->player.orientation = fmod((world->player.orientation +
+												0.04), PI * 2);	
 			render(world);
 		}
 		if (event.key.keysym.sym == SDLK_RIGHT)
 		{
-			world->player.orientation = fmod((world->player.orientation - 0.04), PI * 2);
+			world->player.orientation = fmod((world->player.orientation -
+												0.04), PI * 2);
 			if (world->player.orientation < 0)
 				world->player.orientation += PI * 2;
 			render(world);
 		}
 		if (event.key.keysym.sym == SDLK_e)
-		{
 			map_editor(world);
-		}
-		/*
-		if (event.key.keysym.sym == SDLK_RIGHT)
-		{
-			world->player.x += 1;
-			render(world);
-		}
-		else if (event.key.keysym.sym == SDLK_LEFT)
-		{
-			world->player.x -= 1;			
-			render(world);
-		}
-		else if (event.key.keysym.sym == SDLK_UP)
-		{
-			world->player.y -= 2;			
-			render(world);
-		}
-		else if (event.key.keysym.sym == SDLK_DOWN)
-		{
-			world->player.y += 2;			
-			render(world);
-		}
-		*/
 	}
-
 	return (0);
 }

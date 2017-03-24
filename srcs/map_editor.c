@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: svilau <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/10/20 10:49:50 by svilau            #+#    #+#             */
+/*   Updated: 2017/03/17 14:07:23 by svilau           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/wolf3d.h"
 #include "../frameworks/SDL2.framework/Headers/SDL.h"
 
@@ -13,46 +25,45 @@ void	draw_map(t_world *world, SDL_Surface *screen)
 		while (j < EDITOR_WIN_WIDTH)
 		{
 			if (world->map[i / 100][j / 100] == 1)
-				pixel_to_image(screen, j, i, RED);
+				pixel_to_image(screen, j, i, STANDARD_WALL_COLOR);
 			else
-				pixel_to_image(screen, j, i, BLACK);				
+				pixel_to_image(screen, j, i, EMPTY_SPACE_COLOR);
 			j++;
 		}
 		i++;
 	}
 }
 
-int     edit_map(t_world *world, SDL_Window *window, SDL_Surface *screen, SDL_Event event)
+int		edit_map(t_world *world, SDL_Window *window, SDL_Surface *screen,
+					SDL_Event event)
 {
-		if (event.key.keysym.sym == SDLK_e)
-    	return (1);
-		if (event.button.button == SDL_BUTTON_LEFT)
-			world->map[event.button.y / 100][event.button.x / 100] = 1; 
-		if (event.button.button == SDL_BUTTON_RIGHT)
-			world->map[event.button.y / 100][event.button.x / 100] = 0; 
-		draw_map(world, screen);
+	if (event.key.keysym.sym == SDLK_e)
+		return (1);
+	if (event.button.button == SDL_BUTTON_LEFT)
+		world->map[event.button.y / 100][event.button.x / 100] = 1;
+	if (event.button.button == SDL_BUTTON_RIGHT)
+		world->map[event.button.y / 100][event.button.x / 100] = 0;
+	draw_map(world, screen);
 	return (0);
 }
 
-void    map_editor(t_world *world)
+void	map_editor(t_world *world)
 {
-    SDL_Window		*window;
-	SDL_Surface 	*screen;
+	SDL_Window		*window;
+	SDL_Surface		*screen;
 	SDL_Event		event;
-    int				quit;
-    
-    window = NULL;
-    quit = 0;
-//Initialize SDL	
+	int				quit;
+
+	window = NULL;
+	quit = 0;
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 		return ;
-//Set up window
-	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, EDITOR_WIN_WIDTH, EDITOR_WIN_HEIGHT, 0);
+	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, EDITOR_WIN_WIDTH,
+								EDITOR_WIN_HEIGHT, 0);
 	screen = SDL_GetWindowSurface(window);
-
-	while(quit == 0)
-    {
-		while(SDL_PollEvent(&event))
+	while (quit == 0)
+	{
+		while (SDL_PollEvent(&event))
 			quit = edit_map(world, window, screen, event);
 		SDL_UpdateWindowSurface(window);
 	}

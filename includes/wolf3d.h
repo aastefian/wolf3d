@@ -20,11 +20,11 @@
 // # define WIN_HEIGHT (int) (540 / 100)
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
-# define EDITOR_WIN_WIDTH 600
-# define EDITOR_WIN_HEIGHT 600
+# define EDITOR_WIN_WIDTH 1100
+# define EDITOR_WIN_HEIGHT 1100
 # define WIN_BPP 32
-# define MAP_WIDTH 6
-# define MAP_HEIGHT 6
+# define MAP_WIDTH 11
+# define MAP_HEIGHT 11
 # define VIEW_DISTANCE 10
 # define FOV_RADIANS 1.0471975512
 # define RADIANS_30 0.5235987756
@@ -39,9 +39,15 @@
 # define BLACK 0
 # define WHITE 16777215
 # define RED 16737380
+# define BLUE 49151
 # define GREEN 8190976
 # define ORANGE 16753920
-# define BLUE 49151
+# define NORTH_COLOR RED
+# define EAST_COLOR GREEN
+# define WEST_COLOR ORANGE
+# define SOUTH_COLOR BLUE
+# define STANDARD_WALL_COLOR RED
+# define EMPTY_SPACE_COLOR BLACK
 # define BOUND_RIGHT 190
 
 typedef struct		s_2d_p
@@ -69,6 +75,7 @@ typedef struct		s_collision
 {
 	int x;
 	int y;
+	int color;
 	t_tile	tile;
 	double 	distance;
 }					t_collision;
