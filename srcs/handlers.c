@@ -90,31 +90,31 @@ void	get_first_intersection_vertical(t_world *world, double *collision_x,
 	}
 }
 
-void	get_first_intersection_horizontal(double *collision_x,
-				double *collision_y, int player_x, int player_y, double angle)
+void	get_first_intersection_horizontal(t_world *world, double *collision_x,
+				double *collision_y, double angle)
 {
 	if (0 < angle && angle < RADIANS_90)
 	{
-		*collision_y = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1;
-		*collision_x = player_x + ((player_y - *collision_y) /
+		*collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
+		*collision_x = world->player.x + ((world->player.y - *collision_y) /
 											tan(fmod(angle, RADIANS_90)));
 	}
 	else if (RADIANS_90 < angle && angle < RADIANS_180)
 	{
-		*collision_y = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1;
-		*collision_x = player_x - ((player_y - *collision_y) *
+		*collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE - 1;
+		*collision_x = world->player.x - ((world->player.y - *collision_y) *
 											tan(fmod(angle, RADIANS_90))) + 1;
 	}
 	else if (RADIANS_180 < angle && angle < RADIANS_270)
 	{
-		*collision_y = floor(player_y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		*collision_x = player_x - ((*collision_y - player_y) /
+		*collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		*collision_x = world->player.x - ((*collision_y - world->player.y) /
 											tan(fmod(angle, RADIANS_90))) + 1;
 	}
 	else if (RADIANS_270 < angle && angle < RADIANS_360)
 	{
-		*collision_y = floor(player_y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
-		*collision_x = player_x + ((*collision_y - player_y) *
+		*collision_y = floor(world->player.y / CUBE_SIZE) * CUBE_SIZE + CUBE_SIZE;
+		*collision_x = world->player.x + ((*collision_y - world->player.y) *
 											tan(fmod(angle, RADIANS_90)));
 	}
 }
@@ -257,8 +257,8 @@ void	dist_collision_horizontal(t_collision *collision_h, t_world *world,
 	int		range;
 
 	range = 0;
-	get_first_intersection_horizontal(&collision_x, &collision_y,
-									world->player.x, world->player.y, angle);
+	get_first_intersection_horizontal(world, &collision_x, &collision_y,
+										angle);
 	collision_h->x = collision_x;
 	collision_h->y = collision_y;
 	if (check_collision_horizontal(world, collision_h, angle))

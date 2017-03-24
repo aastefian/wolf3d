@@ -73,10 +73,10 @@ typedef struct		s_tile
 
 typedef struct		s_collision
 {
-	int x;
-	int y;
-	int color;
+	double x;
+	double y;
 	char axis;
+	int color;
 	t_tile	tile;
 	double 	distance;
 }					t_collision;
