@@ -76,6 +76,7 @@ typedef struct		s_collision
 	int x;
 	int y;
 	int color;
+	char axis;
 	t_tile	tile;
 	double 	distance;
 }					t_collision;
