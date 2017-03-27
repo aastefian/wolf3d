@@ -26,6 +26,9 @@ void	print_line(t_world *world, int length, int x, int color)
 			continue;
 		}
 		pixel_to_image(world->window.image, x, y, color);
+		if (x <= (WIN_WIDTH) / 2 + 1 && x >= WIN_WIDTH / 2 - 1 && y <=
+				WIN_HEIGHT / 2 + 1 && y >= WIN_HEIGHT / 2 - 1)
+			pixel_to_image(world->window.image, x, y, DARK_PINK);
 		y++;
 	}
 }

@@ -47,6 +47,7 @@
 # define BLUE 49151
 # define GREEN 8190976
 # define ORANGE 16753920
+# define DARK_PINK 16711935
 
 # define NORTH_COLOR RED
 # define EAST_COLOR GREEN
@@ -110,7 +111,7 @@ typedef struct		s_world
 void				pixel_to_image(SDL_Surface *surface, int x, int y,
 						Uint32 color);
 
-int					wolf3d_handler(t_world *world, SDL_Surface *screen,
+int					wolf3d_key_handler(t_world *world, SDL_Surface *screen,
 						SDL_Event event);
 
 void				load_map(int ***map, char *map_name);
@@ -143,6 +144,10 @@ int					check_collision_vertical(t_world *world,
 
 int					check_collision_horizontal(t_world *world,
 						t_collision *collision_h, double angle);
+
+int					player_collide_forward(t_world world);
+
+int					player_collide_backward(t_world world);
 
 void				move_player_forward(int *player_x, int *player_y,
 						double player_orientation, int player_speed);
