@@ -17,8 +17,14 @@ SRC =	$(SRC_DIR)/main.c \
 		$(SRC_DIR)/map_processing.c \
 		$(SRC_DIR)/handlers.c \
 		$(SRC_DIR)/map_editor.c \
+		$(SRC_DIR)/display_functions.c \
+		$(SRC_DIR)/render.c \
+		$(SRC_DIR)/ray_cast.c \
+		$(SRC_DIR)/get_intersection_point.c \
+		$(SRC_DIR)/check_if_collision.c \
+		$(SRC_DIR)/player_movement.c \
 
-OBJ = main.o map_processing.o handlers.o map_editor.o
+OBJ = main.o map_processing.o handlers.o map_editor.o display_functions.o render.o ray_cast.o get_intersection_point.o check_if_collision.o player_movement.o
 
 RM = rm -f
 

@@ -25,8 +25,8 @@ void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color)
 }
 
 /*
-* Initialize SDL and start listening to events
-* On event receive send data to handler
+**	Initialize SDL and start listening to events
+**	On event receive send data to handler
 */
 
 void	wolf3d(t_world *world)
@@ -57,8 +57,8 @@ void	wolf3d(t_world *world)
 }
 
 /*
-* 	FILE *saved = stdout;
-*	stdout = fopen("log.txt", "w+");
+**	FILE *saved = stdout;
+**	stdout = fopen("log.txt", "w+");
 */
 
 int		main(int argc, char **argv)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   wolf.h                                             :+:      :+:    :+:   */
+/*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: svilau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,45 +10,51 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _WOLF_3D_H
+#ifndef WOLF3D_H
+# define WOLF3D_H
+
 # include <SDL2/SDL.h>
 # include <math.h>
 
-# define _WOLF_3D_H
 # define PI 3.141592
-// # define WIN_WIDTH (int) (960 / 100)
-// # define WIN_HEIGHT (int) (540 / 100)
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
-# define EDITOR_WIN_WIDTH 1100
-# define EDITOR_WIN_HEIGHT 1100
-# define WIN_BPP 32
+
 # define MAP_WIDTH 11
 # define MAP_HEIGHT 11
+
+# define EDITOR_WIN_WIDTH 1100
+# define EDITOR_WIN_HEIGHT 1100
+
 # define VIEW_DISTANCE 10
+
 # define FOV_RADIANS 1.0471975512
+
 # define RADIANS_30 0.5235987756
 # define RADIANS_45 0.7853981634
 # define RADIANS_60 1.0471975512
 # define RADIANS_90 1.5707963268
 # define RADIANS_180 3.1415926536
 # define RADIANS_270 4.7123889804
-# define RADIANS_359 6.2657320147 
+# define RADIANS_359 6.2657320147
 # define RADIANS_360 6.2831853072
+
 # define CUBE_SIZE 512
+
 # define BLACK 0
 # define WHITE 16777215
 # define RED 16737380
 # define BLUE 49151
 # define GREEN 8190976
 # define ORANGE 16753920
+
 # define NORTH_COLOR RED
 # define EAST_COLOR GREEN
 # define WEST_COLOR ORANGE
 # define SOUTH_COLOR BLUE
+
 # define STANDARD_WALL_COLOR RED
 # define EMPTY_SPACE_COLOR BLACK
-# define BOUND_RIGHT 190
 
 typedef struct		s_2d_p
 {
@@ -73,12 +79,12 @@ typedef struct		s_tile
 
 typedef struct		s_collision
 {
-	double x;
-	double y;
-	char axis;
-	int color;
+	double	x;
+	double	y;
+	char	axis;
+	int		color;
 	t_tile	tile;
-	double 	distance;
+	double	distance;
 }					t_collision;
 
 typedef struct		s_player
@@ -97,15 +103,51 @@ typedef struct		s_window
 typedef struct		s_world
 {
 	t_player	player;
-	int 		**map;
+	int			**map;
 	t_window	window;
 }					t_world;
 
-void	pixel_to_image(SDL_Surface *surface, int x, int y, Uint32 color);
-int		wolf3d_handler(t_world *world, SDL_Surface *screen, SDL_Event event);
-void	load_map(int ***map, char *map_name);
-void	render(t_world *world);
-void    map_editor(t_world *world);
-void	print_line(t_world *world, int length, int x, int color);
+void				pixel_to_image(SDL_Surface *surface, int x, int y,
+						Uint32 color);
+
+int					wolf3d_handler(t_world *world, SDL_Surface *screen,
+						SDL_Event event);
+
+void				load_map(int ***map, char *map_name);
+
+void				render(t_world *world);
+
+void				map_editor(t_world *world);
+
+void				print_line(t_world *world, int length, int x, int color);
+
+double				get_next_ray_angle(double player_orientation, int index);
+
+void				cast_ray(t_collision *collision, t_world *world,
+						double angle);
+
+void				get_first_intersection_vertical(t_collision *collision_v,
+						int player_x, int player_y, double angle);
+
+void				get_first_intersection_horizontal(t_collision *collision_h,
+						int player_x, int player_y, double angle);
+
+void				get_next_intersection_vertical(t_collision *collision_v,
+						double angle);
+
+void				get_next_intersection_horizontal(t_collision *collision_h,
+						double angle);
+
+int					check_collision_vertical(t_world *world,
+						t_collision *collision_v, double angle);
+
+int					check_collision_horizontal(t_world *world,
+						t_collision *collision_h, double angle);
+
+void				move_player_forward(int *player_x, int *player_y,
+						double player_orientation, int player_speed);
+
+void				move_player_backward(int *player_x, int *player_y,
+						double player_orientation, int player_speed);
 
 #endif
