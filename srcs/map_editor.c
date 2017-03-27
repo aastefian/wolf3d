@@ -26,6 +26,8 @@ void	draw_map(t_world *world, SDL_Surface *screen)
 		{
 			if (world->map[i / 100][j / 100] == 1)
 				pixel_to_image(screen, j, i, STANDARD_WALL_COLOR);
+			else if (world->map[i / 100][j / 100] == 2)
+				pixel_to_image(screen, j, i, PLAYER_COLOR);				
 			else
 				pixel_to_image(screen, j, i, EMPTY_SPACE_COLOR);
 			j++;
@@ -40,7 +42,12 @@ int		edit_map(t_world *world, SDL_Window *window, SDL_Surface *screen,
 	if (event.key.keysym.sym == SDLK_e)
 		return (1);
 	if (event.button.button == SDL_BUTTON_LEFT)
-		world->map[event.button.y / 100][event.button.x / 100] = 1;
+	{
+		if (world->player.y / CUBE_SIZE != event.button.y / 100 || world->player.x / CUBE_SIZE != event.button.x / 100)
+			world->map[event.button.y / 100][event.button.x / 100] = 1;			
+		else
+			world->map[event.button.y / 100][event.button.x / 100] = 2;
+	}
 	if (event.button.button == SDL_BUTTON_RIGHT)
 		world->map[event.button.y / 100][event.button.x / 100] = 0;
 	draw_map(world, screen);
@@ -58,6 +65,7 @@ void	map_editor(t_world *world)
 	quit = 0;
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 		return ;
+	SDL_SetRelativeMouseMode(0);
 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, EDITOR_WIN_WIDTH,
 								EDITOR_WIN_HEIGHT, 0);
 	screen = SDL_GetWindowSurface(window);
@@ -67,6 +75,7 @@ void	map_editor(t_world *world)
 			quit = edit_map(world, window, screen, event);
 		SDL_UpdateWindowSurface(window);
 	}
+	SDL_SetRelativeMouseMode(1);
 	SDL_FreeSurface(screen);
 	SDL_DestroyWindow(window);
 }

@@ -36,6 +36,7 @@ void	wolf3d(t_world *world)
 	SDL_Event		event;
 	int				quit;
 	t_mask			mask;
+	int				mouse_x;
 
 	quit = 0;
 	window = NULL;
@@ -43,12 +44,30 @@ void	wolf3d(t_world *world)
 		return ;
 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, WIN_WIDTH,
 								WIN_HEIGHT, 0);
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	SDL_SetRelativeMouseMode(1);
 	screen = SDL_GetWindowSurface(window);
 	world->window.image = screen;
+	render(world);
 	while (quit == 0)
 	{
 		SDL_PollEvent(&event);
 		quit = wolf3d_key_handler(world, screen, event);
+		SDL_GetRelativeMouseState(&mouse_x, NULL);
+		if (mouse_x < 0)
+		{
+			world->player.orientation = fmod((world->player.orientation +
+											0.03), PI * 2);
+		}
+		else if (mouse_x > 0) 
+		{
+				world->player.orientation = fmod((world->player.orientation -
+											0.03), PI * 2);
+		if (world->player.orientation < 0)
+			world->player.orientation += PI * 2;
+			
+		}
+		mouse_x = 0;
 		render(world);
 		SDL_UpdateWindowSurface(window);
 	}
@@ -79,7 +98,7 @@ int		main(int argc, char **argv)
 		world->player.x = 1000;
 		world->player.y = 1000;
 		world->player.orientation = 1.58825;
-		world->player.speed = 10;
+		world->player.speed = 100;
 		world->map = map;
 		wolf3d(world);
 	}
