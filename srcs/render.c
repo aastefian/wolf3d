@@ -79,4 +79,5 @@ void	render(t_world *world)
 											collision[i].color);
 		i++;
 	}
+	free(collision);
 }

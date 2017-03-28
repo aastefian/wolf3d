@@ -105,4 +105,6 @@ void	cast_ray(t_collision *collision, t_world *world, double angle)
 	dist_collision_horizontal(collision_h, world, angle);
 	choose_closest_collision(collision, *collision_h, *collision_v);
 	collision->distance *= cos(angle - world->player.orientation);
+	free(collision_v);
+	free(collision_h);
 }

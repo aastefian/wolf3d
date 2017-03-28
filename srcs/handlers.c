@@ -16,7 +16,7 @@
 #include <math.h>
 #include "../frameworks/SDL2.framework/Headers/SDL.h"
 
-void	key_handler1(t_world *world, SDL_Event event)
+void	key_press_handler1(t_world *world, SDL_Event event)
 {
 	if (event.key.keysym.sym == SDLK_LSHIFT)
 	{
@@ -35,7 +35,7 @@ void	key_handler1(t_world *world, SDL_Event event)
 							world->player.orientation, world->player.speed);
 }
 
-void	key_handler2(t_world *world, SDL_Event event)
+void	key_press_handler2(t_world *world, SDL_Event event)
 {
 	if (event.key.keysym.sym == SDLK_LEFT)
 		world->player.orientation = fmod((world->player.orientation +
@@ -51,16 +51,40 @@ void	key_handler2(t_world *world, SDL_Event event)
 		map_editor(world);
 }
 
-int		wolf3d_key_handler(t_world *world, SDL_Surface *screen, SDL_Event event)
+void	mouse_movement(t_world *world)
+{
+	int	mouse_x;
+
+	SDL_GetRelativeMouseState(&mouse_x, NULL);
+	if (mouse_x < 0)
+	{
+		world->player.orientation = fmod((world->player.orientation +
+										0.05), PI * 2);
+	}
+	else if (mouse_x > 0)
+	{
+		world->player.orientation = fmod((world->player.orientation -
+										0.05), PI * 2);
+		if (world->player.orientation < 0)
+			world->player.orientation += PI * 2;
+	}
+	mouse_x = 0;
+}
+
+int		wolf3d_event_handler(t_world *world, SDL_Surface *screen,
+										SDL_Event event)
 {
 	static int mouse_x;
 
-	if (event.type == SDL_QUIT || event.key.keysym.sym == SDLK_ESCAPE)
+	if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN &&
+			event.key.keysym.sym == SDLK_ESCAPE))
 		return (1);
+	SDL_SetRelativeMouseMode(1);
+	mouse_movement(world);
 	if (event.type == SDL_KEYDOWN)
 	{
-		key_handler1(world, event);
-		key_handler2(world, event);
+		key_press_handler1(world, event);
+		key_press_handler2(world, event);
 	}
 	return (0);
 }

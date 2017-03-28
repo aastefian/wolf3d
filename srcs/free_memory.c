@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_processing.c                                   :+:      :+:    :+:   */
+/*   free_memory.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: svilau <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,49 +14,30 @@
 #include <stdlib.h>
 #include "../libft/libft.h"
 
-void	alloc_map(t_world *world, int ***map, int map_width, int map_height)
+void		free_up_to_i(int ***map, int i)
 {
-	int i;
-
-	i = 0;
-	if (!(*map = (int **)malloc(sizeof(int *) * map_height)))
+	while (i >= 0)
 	{
-		free_world(world);
-		ft_putstr("Not enough memory\n Quiting...\n");
-		exit(0);
+		free((*map)[i]);
+		i--;
 	}
-	while (i < map_height)
-	{
-		if (!((*map)[i] = (int *)malloc(sizeof(int) * map_width)))
-		{
-			free_up_to_i(map, i);
-			free_world(world);
-			ft_putstr("Not enough memory\n Quiting...\n");
-			exit(0);
-		}
-		i++;
-	}
+	free(*map);
 }
 
-void	load_map(t_world *world, int ***map, char *map_name)
+void		free_map(t_world *world)
 {
 	int i;
-	int j;
 
-	(void)map_name;
-	alloc_map(world, map, MAP_WIDTH, MAP_HEIGHT);
 	i = 0;
 	while (i < MAP_HEIGHT)
 	{
-		j = 0;
-		while (j < MAP_WIDTH)
-		{
-			if (i == 0 || j == 0 || i == MAP_HEIGHT - 1 || j == MAP_WIDTH - 1)
-				(*map)[i][j] = 1;
-			else
-				(*map)[i][j] = 0;
-			j++;
-		}
+		free(world->map[i]);
 		i++;
 	}
+	free(world->map);
+}
+
+void		free_world(t_world *world)
+{
+	free(world);
 }

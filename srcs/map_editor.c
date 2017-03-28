@@ -26,8 +26,9 @@ void	draw_map(t_world *world, SDL_Surface *screen)
 		{
 			if (world->map[i / 100][j / 100] == 1)
 				pixel_to_image(screen, j, i, STANDARD_WALL_COLOR);
-			else if (world->map[i / 100][j / 100] == 2)
-				pixel_to_image(screen, j, i, PLAYER_COLOR);				
+			else if (world->player.y / CUBE_SIZE == i / 100 && world->player.x /
+				CUBE_SIZE == j / 100)
+				pixel_to_image(screen, j, i, PLAYER_COLOR);
 			else
 				pixel_to_image(screen, j, i, EMPTY_SPACE_COLOR);
 			j++;
@@ -43,10 +44,11 @@ int		edit_map(t_world *world, SDL_Window *window, SDL_Surface *screen,
 		return (1);
 	if (event.button.button == SDL_BUTTON_LEFT)
 	{
-		if (world->player.y / CUBE_SIZE != event.button.y / 100 || world->player.x / CUBE_SIZE != event.button.x / 100)
-			world->map[event.button.y / 100][event.button.x / 100] = 1;			
+		if (world->player.y / CUBE_SIZE == event.button.y / 100 &&
+				world->player.x / CUBE_SIZE == event.button.x / 100)
+			world->map[event.button.y / 100][event.button.x / 100] = 0;
 		else
-			world->map[event.button.y / 100][event.button.x / 100] = 2;
+			world->map[event.button.y / 100][event.button.x / 100] = 1;
 	}
 	if (event.button.button == SDL_BUTTON_RIGHT)
 		world->map[event.button.y / 100][event.button.x / 100] = 0;
@@ -75,7 +77,7 @@ void	map_editor(t_world *world)
 			quit = edit_map(world, window, screen, event);
 		SDL_UpdateWindowSurface(window);
 	}
-	SDL_SetRelativeMouseMode(1);
 	SDL_FreeSurface(screen);
 	SDL_DestroyWindow(window);
+	SDL_SetRelativeMouseMode(1);
 }

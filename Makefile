@@ -25,8 +25,9 @@ SRC =	$(SRC_DIR)/main.c \
 		$(SRC_DIR)/player_movement.c \
 		$(SRC_DIR)/player_collision_backward.c \
 		$(SRC_DIR)/player_collision_forward.c \
+		$(SRC_DIR)/free_memory.c \
 
-OBJ = main.o map_processing.o handlers.o map_editor.o display_functions.o render.o ray_cast.o get_intersection_point.o check_if_collision.o player_movement.o player_collision_backward.o player_collision_forward.o
+OBJ = main.o map_processing.o handlers.o map_editor.o display_functions.o render.o ray_cast.o get_intersection_point.o check_if_collision.o player_movement.o player_collision_backward.o player_collision_forward.o free_memory.o
 
 RM = rm -f
 
@@ -53,7 +54,7 @@ fclean: clean
 re: fclean all
 
 run: $(NAME)
-	./bin/wolf3d default
+	./bin/wolf3d
 
 runforever:
 	nodemon -e c,h --watch . --exec make run > /tmp/lala

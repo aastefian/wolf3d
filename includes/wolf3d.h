@@ -48,15 +48,20 @@
 # define GREEN 8190976
 # define ORANGE 16753920
 # define DARK_PINK 16711935
+# define SKY_BLUE 8900331
+# define LIGHT_BROWN 12624511
 
 # define NORTH_COLOR RED
 # define EAST_COLOR GREEN
 # define WEST_COLOR ORANGE
 # define SOUTH_COLOR BLUE
 
-# define PLAYER_COLOR DARK_PINK
-# define STANDARD_WALL_COLOR RED
+# define PLAYER_COLOR BLUE
+# define STANDARD_WALL_COLOR LIGHT_BROWN
 # define EMPTY_SPACE_COLOR BLACK
+
+# define SKY_COLOR SKY_BLUE
+# define GROUND_COLOR LIGHT_BROWN
 
 typedef struct		s_2d_p
 {
@@ -100,22 +105,30 @@ typedef struct		s_player
 typedef struct		s_window
 {
 	SDL_Surface		*image;
+	SDL_Window		*win;
 }					t_window;
+
+typedef struct		s_keys
+{
+	int shift;
+	int up;
+}					t_keys;
 
 typedef struct		s_world
 {
 	t_player	player;
 	int			**map;
 	t_window	window;
+	t_keys		*keys;
 }					t_world;
 
 void				pixel_to_image(SDL_Surface *surface, int x, int y,
 						Uint32 color);
 
-int					wolf3d_key_handler(t_world *world, SDL_Surface *screen,
+int					wolf3d_event_handler(t_world *world, SDL_Surface *screen,
 						SDL_Event event);
 
-void				load_map(int ***map, char *map_name);
+void				load_map(t_world *world, int ***map, char *map_name);
 
 void				render(t_world *world);
 
@@ -155,5 +168,11 @@ void				move_player_forward(int *player_x, int *player_y,
 
 void				move_player_backward(int *player_x, int *player_y,
 						double player_orientation, int player_speed);
+
+void				free_map(t_world *world);
+
+void				free_world(t_world *world);
+
+void				free_up_to_i(int ***map, int i);
 
 #endif
