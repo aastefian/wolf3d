@@ -48,7 +48,6 @@ void	wolf3d(t_world *world)
 		return ;
 	window = SDL_CreateWindow("Wolf 3D v1.0 Beta", 100, 100, WIN_WIDTH,
 								WIN_HEIGHT, 0);
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 	screen = SDL_GetWindowSurface(window);
 	world->window.image = screen;
 	render(world);
