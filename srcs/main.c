@@ -40,7 +40,6 @@ void	wolf3d(t_world *world)
 	SDL_Surface		*screen;
 	SDL_Event		event;
 	int				quit;
-	t_mask			mask;
 
 	quit = 0;
 	window = NULL;
