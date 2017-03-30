@@ -36,8 +36,10 @@ all: $(NAME)
 $(NAME):
 	@echo "--Compiling libft library--"
 	@$(MAKE) $(MAKE_FLAGS) -C $(LIBFT_DIR)
+	@echo "--Compiling sources--------"
 	@$(CC) $(CC_FLAG) -c $(SRC)
 	@mkdir -p bin
+	@echo "--Creating executable------"
 	@$(CC) -o bin/$(NAME) $(OBJ) $(LIBFT)  -rpath ./Frameworks -F./Frameworks -framework SDL2
 	@echo "--Done---------------------"
 
