@@ -13,9 +13,20 @@
 #include "../includes/wolf3d.h"
 #include "../frameworks/SDL2.framework/Headers/SDL.h"
 
+int		edge_of_map(t_world *world, SDL_Event event)
+{
+	if (event.button.y / BLOCK_SIZE != 0 &&
+	event.button.x / BLOCK_SIZE != 0 &&
+	event.button.y / BLOCK_SIZE != MAP_HEIGHT - 1 &&
+	event.button.x / BLOCK_SIZE != MAP_WIDTH - 1)
+		return (0);
+	return (1);
+}
+
 void	handle_mouse_motion(t_world *world, SDL_Event event)
 {
-	if (event.motion.state == SDL_BUTTON(SDL_BUTTON_RIGHT))
+	if (event.motion.state == SDL_BUTTON(SDL_BUTTON_RIGHT) &&
+	!(edge_of_map(world, event)))
 		world->map[event.button.y / BLOCK_SIZE][event.button.x /
 					BLOCK_SIZE] = 0;
 	if (event.motion.state == SDL_BUTTON(SDL_BUTTON_LEFT) &&
@@ -59,7 +70,8 @@ int		edit_map(t_world *world, SDL_Window *window, SDL_Surface *screen,
 		handle_mouse_motion(world, event);
 	if (event.type == SDL_MOUSEBUTTONDOWN)
 	{
-		if (event.button.button == SDL_BUTTON_RIGHT)
+		if (event.button.button == SDL_BUTTON_RIGHT &&
+		!(edge_of_map(world, event)))
 			world->map[event.button.y / BLOCK_SIZE][event.button.x /
 						BLOCK_SIZE] = 0;
 		if (event.button.button == SDL_BUTTON_LEFT &&
